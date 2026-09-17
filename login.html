@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Access | Zylo Store</title>
+    <!-- Tailwind CSS v4 -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Fonts matched with index.html -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;450;500;600;700&display=swap" rel="stylesheet">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; } 
+        .serif-font { font-family: 'Playfair Display', serif; }
+        @media (max-width: 768px) {
+            #mobileMenu {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                z-index: 999;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+            #mobileMenu.hidden { display: none; }
+        }
+
+        /* CUSTOM WELCOME OVERLAY STYLES */
+        @keyframes ringPulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .pulse-ring {
+            animation: ringPulse 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-850 antialiased min-h-screen flex flex-col justify-between relative">
+
+    <!-- ========================================== -->
+    <!-- WELCOME / VIDEO LOADING OVERLAY (ANIMATION) -->
+    <!-- ========================================== -->
+    <div id="welcomeOverlay" class="fixed inset-0 z-[9999] bg-stone-950 flex flex-col items-center justify-center p-6 text-center opacity-0 pointer-events-none transition-opacity duration-500">
+        
+        <!-- Background Ambient Video/Glow Effect -->
+        <div class="absolute inset-0 overflow-hidden opacity-30">
+            <video class="w-full h-full object-cover blur-sm" autoplay loop muted playsinline>
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-ink-swirling-in-water-4122-large.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <!-- Glassmorphism Card Content -->
+        <div class="relative z-10 bg-stone-900/80 backdrop-blur-md p-8 md:p-12 rounded-3xl border border-stone-700/50 shadow-2xl max-w-sm w-full flex flex-col items-center space-y-5">
+            
+            <!-- Animated Glowing Badge -->
+            <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-600 to-amber-300 flex items-center justify-center p-1 shadow-lg pulse-ring">
+                <div class="w-full h-full bg-stone-950 rounded-full flex items-center justify-center">
+                    <span class="text-2xl">✨</span>
+                </div>
+            </div>
+
+            <!-- Animated Text -->
+            <div class="space-y-1">
+                <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-400">Authenticating</span>
+                <h2 id="welcomeTitle" class="serif-font text-2xl md:text-3xl font-bold text-white tracking-wide">Welcome to Zylo</h2>
+                <p id="welcomeSubtitle" class="text-xs text-stone-400 font-medium">Setting up your personal dashboard...</p>
+            </div>
+
+            <!-- Smooth Progress Bar -->
+            <div class="w-full bg-stone-800 h-1.5 rounded-full overflow-hidden mt-4">
+                <!-- duration ko 5000ms (5 seconds) kar diya hai -->
+                <div id="welcomeProgress" class="bg-amber-600 h-full w-0 transition-all duration-[5000ms] ease-out"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 bg-white border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="index.html" class="inline-flex items-center select-none group cursor-pointer">
+                <div class="relative flex items-center">
+                    <span class="text-3xl font-serif font-normal bg-gradient-to-b from-cyan-300 via-sky-500 to-blue-700 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(56,189,248,0.4)]">
+                        ZYL
+                    </span>
+                    <div class="relative inline-block">
+                        <span class="text-3xl font-serif font-normal bg-gradient-to-b from-cyan-300 via-sky-500 to-blue-700 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(56,189,248,0.4)]">
+                            O
+                        </span>
+                        <div class="absolute bottom-0.5 left-1/2 -translate-x-1/2 flex items-center gap-0.5 text-sky-400">
+                            <svg class="w-2.5 h-2.5 transform -rotate-45 fill-sky-400" viewBox="0 0 24 24"><path d="M17.5 2c-3.5 0-6.5 2.5-7.5 6-1-3.5-4-6-7.5-6C1 2 0 4 0 6.5 0 14 10 22 10 22s10-8 10-15.5C20 4 19 2 17.5 2z"/></svg>
+                            <svg class="w-2.5 h-2.5 transform rotate-12 fill-sky-400" viewBox="0 0 24 24"><path d="M17.5 2c-3.5 0-6.5 2.5-7.5 6-1-3.5-4-6-7.5-6C1 2 0 4 0 6.5 0 14 10 22 10 22s10-8 10-15.5C20 4 19 2 17.5 2z"/></svg>
+                        </div>
+                    </div>
+                    <svg class="absolute -bottom-2 left-0 w-full h-4 overflow-visible pointer-events-none" viewBox="0 0 120 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 90 8 Q 60 15 5 10 C 2 9 1 7 0 5" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.8"/>
+                    </svg>
+                </div>
+            </a>
+
+            <button id="menuBtn" class="md:hidden text-3xl cursor-pointer">
+                ☰
+            </button>
+
+            <nav id="mobileMenu" class="hidden flex-col items-start gap-4 text-sm font-medium text-stone-600 md:flex md:flex-row md:items-center md:gap-8">
+                <a href="index.html" class="hover:text-amber-800 transition-colors">Home</a>
+                <a href="produce.html" class="hover:text-amber-800 transition-colors">Products</a>
+                <a href="about.html" class="hover:text-amber-800 transition-colors">About</a>
+                <a href="checkout.html" class="hover:text-amber-800 transition-colors">Checkout</a>
+                <a href="track.html" class="bg-amber-800 text-white px-4 py-2 rounded-lg hover:bg-stone-900 transition-colors">Track Order</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN FORM SECTION -->
+    <main class="max-w-md mx-auto w-full px-6 py-12 my-auto">
+        <div class="bg-white rounded-3xl p-8 border border-stone-200 shadow-sm space-y-6">
+            
+            <!-- Branding Header -->
+            <div class="text-center space-y-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-amber-800 bg-amber-50 px-3 py-1 rounded-full border border-amber-200/60 inline-block">Official Authentication</span>
+                <h1 class="serif-font text-3xl font-bold text-stone-900 pt-2">Welcome to Zylo</h1>
+                <p class="text-xs text-stone-500">Access your organic skincare account</p>
+            </div>
+
+            <!-- Alert Message Box -->
+            <div id="alertBox" class="hidden p-3 rounded-xl text-xs font-semibold transition-all"></div>
+
+            <!-- TAB SWITCHER -->
+            <div id="tabContainer" class="flex border-b border-stone-200">
+                <button id="tabLogin" class="w-1/2 py-2.5 text-center text-xs font-bold border-b-2 border-amber-800 text-amber-800 uppercase tracking-wider transition-all cursor-pointer">Login</button>
+                <button id="tabSignup" class="w-1/2 py-2.5 text-center text-xs font-bold border-b-2 border-transparent text-stone-400 hover:text-stone-800 uppercase tracking-wider transition-all cursor-pointer">Sign Up</button>
+            </div>
+
+            <!-- 1. LOGIN FORM -->
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Gmail Address</label>
+                    <input type="email" id="loginEmail" required placeholder="example@gmail.com" class="w-full px-4 py-3 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-amber-700 text-stone-900 transition-colors" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-4 py-3 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-amber-700 text-stone-900 transition-colors" />
+                </div>
+
+                <div class="text-right">
+                    <button type="button" id="gotoForgot" class="text-xs text-amber-800 font-medium hover:underline cursor-pointer">Forgot Password?</button>
+                </div>
+
+                <button type="submit" class="w-full bg-stone-900 hover:bg-amber-800 text-white font-bold py-3.5 rounded-full text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer">
+                    Log In
+                </button>
+            </form>
+
+            <!-- 2. SIGNUP FORM -->
+            <form id="signupForm" class="hidden space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Full Name</label>
+                    <input type="text" id="signupName" required placeholder="Your Name" class="w-full px-4 py-3 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-amber-700 text-stone-900 transition-colors" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Gmail Address (@gmail.com only)</label>
+                    <input type="email" id="signupEmail" required placeholder="example@gmail.com" class="w-full px-4 py-3 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-amber-700 text-stone-900 transition-colors" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Password</label>
+                    <input type="password" id="signupPassword" required placeholder="••••••••" class="w-full px-4 py-3 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-amber-700 text-stone-900 transition-colors" />
+                </div>
+
+                <button type="submit" id="sendSignupOtpBtn" class="w-full bg-stone-900 hover:bg-amber-800 text-white font-bold py-3.5 rounded-full text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer">
+                    Get Verification Code
+                </button>
+            </form>
+
+            <!-- 3. FORGOT PASSWORD FORM -->
+            <form id="forgotForm" class="hidden space-y-4">
+                <h3 class="serif-font text-lg font-bold text-stone-900 border-b border-stone-100 pb-2">Reset Password</h3>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Registered Gmail</label>
+                    <input type="email" id="forgotEmail" required placeholder="example@gmail.com" class="w-full px-4 py-3 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-amber-700 text-stone-900 transition-colors" />
+                </div>
+
+                <button type="submit" id="sendForgotOtpBtn" class="w-full bg-stone-900 hover:bg-amber-800 text-white font-bold py-3.5 rounded-full text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer">
+                    Send Reset OTP Code
+                </button>
+
+                <button type="button" id="backToLoginFromForgot" class="w-full text-xs text-stone-500 font-medium hover:underline text-center block pt-2 cursor-pointer">
+                    Back to Login
+                </button>
+            </form>
+
+            <!-- 4. OTP VERIFICATION FORM -->
+            <form id="otpForm" class="hidden space-y-4">
+                <div class="text-center space-y-1">
+                    <h2 class="serif-font text-xl font-bold text-stone-900">Enter Verification Code</h2>
+                    <p class="text-xs text-stone-500">Code sent to: <span id="sentEmailDisplay" class="font-bold text-amber-800"></span></p>
+                </div>
+
+                <div>
+                    <input type="text" id="otpInput" maxlength="6" required placeholder="123456" class="w-full text-center text-2xl font-bold tracking-widest px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-amber-700 text-stone-900 transition-colors" />
+                </div>
+
+                <div id="newPasswordGroup" class="hidden">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">New Password</label>
+                    <input type="password" id="newPassword" placeholder="••••••••" class="w-full px-4 py-3 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-amber-700 text-stone-900 transition-colors" />
+                </div>
+
+                <button type="submit" id="verifyBtn" class="w-full bg-amber-800 hover:bg-stone-900 text-white font-bold py-3.5 rounded-full text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer">
+                    Verify & Proceed
+                </button>
+
+                <button type="button" id="cancelOtpBtn" class="w-full text-xs text-stone-500 font-medium hover:underline text-center block pt-1 cursor-pointer">
+                     Change / Edit Gmail Address
+                </button>
+            </form>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-stone-200 bg-stone-100 py-8 text-xs text-stone-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-6 text-center text-[11px] text-stone-400">
+            <p>&copy; 2026 ZYLO. All rights reserved. Luxury Skincare for Everyone.</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPT LOGIC (FIREBASE + EMAILJS) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBPbb16mw5koowrJaPA4D6MG-Yyrg9_liI",
+            authDomain: "zylo-store.firebaseapp.com",
+            databaseURL: "https://zylo-store-default-rtdb.firebaseio.com",
+            projectId: "zylo-store",
+            storageBucket: "zylo-store.firebasestorage.app",
+            messagingSenderId: "89360576006",
+            appId: "1:89360576006:web:3f9168edc387e93e101d87",
+            measurementId: "G-QQLG4E2QVY"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById("menuBtn");
+        const mobileMenu = document.getElementById("mobileMenu");
+        menuBtn.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+        });
+
+        // EmailJS credentials
+        const EMAILJS_PUBLIC_KEY = "onEb_eBzFYcJMVOAh";
+        const EMAILJS_SERVICE_ID = "service_qog0vmc";
+        const EMAILJS_TEMPLATE_ID = "template_l0u9ooj";
+        const ABSTRACT_API_KEY = "047266bc943146b3b95256be3bb99c02";
+
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+
+        let generatedOtp = null;
+        let currentFlow = ""; // "SIGNUP" or "FORGOT"
+        let tempUserData = {};
+
+        const alertBox = document.getElementById("alertBox");
+        const tabLogin = document.getElementById("tabLogin");
+        const tabSignup = document.getElementById("tabSignup");
+        const tabContainer = document.getElementById("tabContainer");
+
+        const loginForm = document.getElementById("loginForm");
+        const signupForm = document.getElementById("signupForm");
+        const forgotForm = document.getElementById("forgotForm");
+        const otpForm = document.getElementById("otpForm");
+        const newPasswordGroup = document.getElementById("newPasswordGroup");
+
+        // WELCOME OVERLAY TRIGGER FUNCTION (5-6 Seconds Delay Configured)
+        function triggerWelcomeScreen(titleText, subtitleText, targetPage = "index.html") {
+            const overlay = document.getElementById("welcomeOverlay");
+            const title = document.getElementById("welcomeTitle");
+            const subtitle = document.getElementById("welcomeSubtitle");
+            const progress = document.getElementById("welcomeProgress");
+
+            title.textContent = titleText;
+            subtitle.textContent = subtitleText;
+
+            overlay.classList.remove("opacity-0", "pointer-events-none");
+            overlay.classList.add("opacity-100");
+
+            setTimeout(() => {
+                progress.style.width = "100%";
+            }, 100);
+
+            // Total 5.5 seconds (5500 milliseconds) ka wait takay loading achi tarah show ho
+            setTimeout(() => {
+                window.location.href = targetPage;
+            }, 5500);
+        }
+
+        function showAlert(msg, isError = true) {
+            alertBox.textContent = msg;
+            alertBox.className = `mb-4 p-3 rounded-xl text-xs font-semibold ${
+                isError ? "bg-red-50 text-red-700 border border-red-200" : "bg-emerald-50 text-emerald-800 border border-emerald-200"
+            }`;
+            alertBox.classList.remove("hidden");
+        }
+
+        function hideAlert() {
+            alertBox.classList.add("hidden");
+        }
+
+        function isValidGmailFormat(email) {
+            const gmailRegex = /^[a-zA-Z0-9.]+@gmail\.com$/;
+            return gmailRegex.test(email) && email.length >= 12;
+        }
+
+        async function checkEmailExists(email) {
+            try {
+                const response = await fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=${ABSTRACT_API_KEY}&email=${email}`);
+                const data = await response.json();
+                if (data.deliverability === "UNDELIVERABLE" || data.is_valid_format.value === false) {
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error("Validation API Error:", error);
+                return true;
+            }
+        }
+
+        // TAB NAVIGATION LOGIC
+        tabLogin.addEventListener("click", () => {
+            tabLogin.className = "w-1/2 py-2.5 text-center text-xs font-bold border-b-2 border-amber-800 text-amber-800 uppercase tracking-wider transition-all cursor-pointer";
+            tabSignup.className = "w-1/2 py-2.5 text-center text-xs font-bold border-b-2 border-transparent text-stone-400 hover:text-stone-800 uppercase tracking-wider transition-all cursor-pointer";
+            loginForm.classList.remove("hidden");
+            signupForm.classList.add("hidden");
+            forgotForm.classList.add("hidden");
+            otpForm.classList.add("hidden");
+            hideAlert();
+        });
+
+        tabSignup.addEventListener("click", () => {
+            tabSignup.className = "w-1/2 py-2.5 text-center text-xs font-bold border-b-2 border-amber-800 text-amber-800 uppercase tracking-wider transition-all cursor-pointer";
+            tabLogin.className = "w-1/2 py-2.5 text-center text-xs font-bold border-b-2 border-transparent text-stone-400 hover:text-stone-800 uppercase tracking-wider transition-all cursor-pointer";
+            signupForm.classList.remove("hidden");
+            loginForm.classList.add("hidden");
+            forgotForm.classList.add("hidden");
+            otpForm.classList.add("hidden");
+            hideAlert();
+        });
+
+        document.getElementById("gotoForgot").addEventListener("click", () => {
+            loginForm.classList.add("hidden");
+            forgotForm.classList.remove("hidden");
+            tabContainer.classList.add("hidden");
+            hideAlert();
+        });
+
+        document.getElementById("backToLoginFromForgot").addEventListener("click", () => {
+            forgotForm.classList.add("hidden");
+            loginForm.classList.remove("hidden");
+            tabContainer.classList.remove("hidden");
+            hideAlert();
+        });
+
+        // 1. FIREBASE LOGIN SYSTEM
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("loginEmail").value.trim();
+            const password = document.getElementById("loginPassword").value;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                const userData = {
+                    name: user.displayName || "Customer",
+                    email: user.email,
+                    uid: user.uid
+                };
+                localStorage.setItem('currentUser', JSON.stringify(userData));
+                hideAlert();
+
+                triggerWelcomeScreen(`Welcome Back, ${userData.name}!`, "Preparing your skincare collection...", "index.html");
+            } catch (error) {
+                console.error("Login error:", error.message);
+                showAlert("Incorrect email or password. Please try again.");
+            }
+        });
+
+        // OTP SENDER WITH EMAILJS
+        async function sendOtp(email, name = "Customer", buttonElement, flowType) {
+            if (!isValidGmailFormat(email)) {
+                showAlert("Please enter a valid Gmail address in the correct format (for example, name@gmail.com).");
+                return;
+            }
+
+            buttonElement.disabled = true;
+            buttonElement.textContent = "Checking Gmail...";
+            showAlert("We are verifying your Gmail address. Please wait...", false);
+
+            const exists = await checkEmailExists(email);
+
+            if (!exists) {
+                showAlert("Invalid email address. Please enter a valid Gmail address.");
+                buttonElement.disabled = false;
+                buttonElement.textContent = flowType === "SIGNUP" ? "Get Verification Code" : "Send Reset OTP Code";
+                return;
+            }
+
+            generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+            currentFlow = flowType;
+            buttonElement.textContent = "Sending OTP...";
+
+            const templateParams = {
+                to_email: email,
+                otp_code: generatedOtp,
+                name: name
+            };
+
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+                .then(() => {
+                    showAlert("An OTP code has been sent to your Gmail address.", false);
+                    loginForm.classList.add("hidden");
+                    signupForm.classList.add("hidden");
+                    forgotForm.classList.add("hidden");
+                    tabContainer.classList.add("hidden");
+
+                    otpForm.classList.remove("hidden");
+                    document.getElementById("sentEmailDisplay").textContent = email;
+
+                    if (flowType === "FORGOT") {
+                        newPasswordGroup.classList.remove("hidden");
+                        document.getElementById("newPassword").required = true;
+                    } else {
+                        newPasswordGroup.classList.add("hidden");
+                        document.getElementById("newPassword").required = false;
+                    }
+                })
+                .catch((err) => {
+                    showAlert("We could not send the OTP. Please check your Gmail address and try again.");
+                    console.error("EmailJS Error:", err);
+                })
+                .finally(() => {
+                    buttonElement.disabled = false;
+                    buttonElement.textContent = flowType === "SIGNUP" ? "Get Verification Code" : "Send Reset OTP Code";
+                });
+        }
+
+        // SIGNUP SUBMIT
+        signupForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const email = document.getElementById("signupEmail").value.trim();
+            const name = document.getElementById("signupName").value.trim();
+            const password = document.getElementById("signupPassword").value;
+
+            tempUserData = { name, email, password };
+            sendOtp(email, name, document.getElementById("sendSignupOtpBtn"), "SIGNUP");
+        });
+
+        // FORGOT PASSWORD SUBMIT
+        forgotForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const email = document.getElementById("forgotEmail").value.trim();
+            tempUserData = { email };
+            sendOtp(email, "Customer", document.getElementById("sendForgotOtpBtn"), "FORGOT");
+        });
+
+        // VERIFY OTP & CREATE/RESET ACCOUNT VIA FIREBASE
+        otpForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const enteredOtp = document.getElementById("otpInput").value.trim();
+
+            if (enteredOtp === generatedOtp) {
+                try {
+                    if (currentFlow === "SIGNUP") {
+                        const userCredential = await createUserWithEmailAndPassword(auth, tempUserData.email, tempUserData.password);
+                        const user = userCredential.user;
+
+                        await updateProfile(user, { displayName: tempUserData.name });
+
+                        const userData = {
+                            name: tempUserData.name,
+                            email: user.email,
+                            uid: user.uid
+                        };
+                        localStorage.setItem('currentUser', JSON.stringify(userData));
+
+                        triggerWelcomeScreen(`Account Verified!`, `Welcome to Zylo, ${tempUserData.name}!`, "index.html");
+
+                    } else if (currentFlow === "FORGOT") {
+                        await sendPasswordResetEmail(auth, tempUserData.email);
+                        showAlert("A password reset link has been sent to your registered Gmail address.", false);
+                        setTimeout(() => location.reload(), 2500);
+                    }
+                } catch (error) {
+                    console.error("Firebase Auth Error:", error.message);
+                    showAlert("Error: " + error.message);
+                }
+            } else {
+                showAlert("Incorrect OTP code. Please check and try again.");
+            }
+        });
+
+        // CANCEL / EDIT EMAIL
+        document.getElementById("cancelOtpBtn").addEventListener("click", () => {
+            otpForm.classList.add("hidden");
+            tabContainer.classList.remove("hidden");
+            if (currentFlow === "SIGNUP") {
+                signupForm.classList.remove("hidden");
+            } else {
+                forgotForm.classList.remove("hidden");
+            }
+            hideAlert();
+        });
+    </script>
+</body>
+</html>

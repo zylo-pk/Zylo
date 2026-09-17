@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Zylo Store</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Plus+Jakarta+Sans:wght@300;450;600&display=swap" rel="stylesheet">
+    <style>
+body { 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+} 
+
+.serif-font {
+    font-family: 'Playfair Display', serif; }
+
+@media (max-width:768px) {
+    #mobileMenu {
+        display:flex;
+        flex-direction:column;
+        position:absolute;
+        top:80px;
+        left:0;
+        width:100%;
+        background:white;
+        padding:20px;
+        z-index:999;
+        box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    #mobileMenu.hidden {
+        display:none;
+    }
+}
+
+</style>
+</head>
+<body class="bg-stone-50 text-stone-850 antialiased pb-12">
+
+    <header class="sticky top-0 z-50 bg-white border-b">
+  <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+
+    <a href="index.html" class="text-3xl font-bold">
+      ZYLO
+    </a>
+
+    <button id="menuBtn" class="md:hidden text-3xl">
+      ☰
+    </button>
+
+  <nav id="mobileMenu"
+class="hidden flex-col items-start gap-4 text-sm font-medium text-stone-600 md:flex md:flex-row md:items-center md:gap-8">
+
+      <a href="index.html">Home</a>
+      <a href="produce.html">Products</a>
+      <a href="about.html">About</a>
+      <a href="checkout.html">Checkout</a>
+
+            <!-- Profile Button -->
+            <button onclick="toggleProfileModal()" class="bg-amber-800 text-white px-4 py-2 rounded-lg hover:bg-stone-900 transition-colors flex items-center gap-2 font-medium cursor-pointer">
+                <span>👤</span>
+                <span id="header-user-btn-name">Customer</span>
+            </button>
+
+    </nav>
+
+  </div>
+</header>
+    <main class="max-w-5xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12">
+       <div class="space-y-6">
+
+    <h2 class="serif-font text-2xl text-stone-900 font-bold border-b border-stone-200 pb-3">
+        Order Summary
+    </h2>
+
+    <!-- ITEMS -->
+    <div id="checkout-items" class="space-y-3"></div>
+
+    <!-- SUMMARY BOX -->
+    <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm space-y-4">
+
+        <!-- SUBTOTAL -->
+        <div class="flex justify-between items-center text-stone-700">
+            <span>Subtotal</span>
+            <span id="checkout-subtotal" class="font-semibold text-stone-900">Rs. 0</span>
+        </div>
+
+        <!-- DELIVERY -->
+        <div class="flex justify-between items-center text-stone-700">
+            <span>Delivery Fee</span>
+            <span id="delivery-fee" class="text-green-600 font-semibold">Rs. 0 (Free)</span>
+        </div>
+        <div class="text-xs text-stone-500">Free delivery available for more than Rs. 1500.</div>
+
+        <hr class="border-stone-200">
+
+        <!-- TOTAL -->
+        <div class="flex justify-between items-center text-lg font-bold text-stone-900">
+            <span>Grand Total</span>
+            <span id="checkout-total" class="text-amber-800">Rs. 0</span>
+        </div>
+
+    </div>
+
+</div>
+
+        <div class="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm">
+            <h2 class="serif-font text-2xl text-stone-900 mb-6">Delivery & Payment</h2>
+            <form id="order-form" class="space-y-4">
+                <input type="text" id="c-name" placeholder="Full Name" required class="w-full bg-stone-50 border border-stone-300 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-700 text-stone-900">
+                <input type="tel" id="c-phone" placeholder="Enter Your Number" required class="w-full bg-stone-50 border border-stone-300 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-700 text-stone-900" aria-required="true" pattern="^(03[0-9]{9}|03[0-9]{2}-[0-9]{7})$" title="Phone number should be 03XXXXXXXXX or 03XX-XXXXXXX">
+                <select id="address-dropdown" required class="w-full bg-stone-50 border border-stone-300 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-700 text-stone-900">
+                    <option value="">Select your area (Required)</option>
+                    <option value="north karachi">North Karachi</option>
+                    <option value="new karachi">New Karachi</option>
+                    <option value="buffer zone">Buffer Zone</option>
+                    <option value="north nazimabad">North Nazimabad</option>
+                    <option value="federal b area">Federal B Area</option>
+                    <option value="gulshan-e-iqbal">Gulshan-e-Iqbal</option>
+                    <option value="gulistan-e-johar">Gulistan-e-Johar</option>
+                    <option value="pechs">PECHS</option>
+                    <option value="bahadurabad">Bahadurabad</option>
+                    <option value="saddar">Saddar</option>
+                    <option value="korangi">Korangi</option>
+                    <option value="landhi">Landhi</option>
+                    <option value="malir">Malir</option>
+                    <option value="clifton">Clifton</option>
+                    <option value="dha">DHA</option>
+                     <option value="other">Other</option>
+                </select>
+                <div class="form-group mt-4">
+                    <input type="text" id="home-address" placeholder="Complete Home Address (House No, Street, Sector etc.)" required class="w-full bg-stone-50 border border-stone-300 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-700 text-stone-900">
+                </div>
+                <div id="address-help" class="mt-2 text-xs text-stone-500"></div>
+                <div id="address-feedback" class="mt-2 text-xs text-red-600"></div>
+                <div class="border-t border-stone-200 pt-4 mt-2">
+                    <label class="block text-xs font-bold uppercase text-stone-500 mb-2">Select Payment Method</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <label class="border border-stone-300 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-stone-50 bg-stone-100">
+                            <input type="radio" name="payment_method" value="COD" checked onclick="switchPayment('cod')" class="mb-1 accent-amber-800">
+                            <span class="text-xs font-semibold text-stone-900">COD</span>
+                        </label>
+                        <label class="border border-stone-300 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-stone-50 bg-stone-100">
+                            <input type="radio" name="payment_method" value="Mobile Wallet" onclick="switchPayment('wallet')" class="mb-1 accent-amber-800">
+                            <span class="text-xs font-semibold text-stone-900">EasyPaisa</span>
+                        </label>
+                        <label class="border border-stone-300 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-stone-50 bg-stone-100">
+                            <input type="radio" name="payment_method" value="Card Payment" onclick="switchPayment('card')" class="mb-1 accent-amber-800">
+                            <span class="text-xs font-semibold text-stone-900">Card</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="wallet-details" class="hidden bg-amber-50/60 p-4 rounded-2xl border border-amber-200 text-xs text-stone-700 space-y-2">
+                    <p class="font-bold text-stone-900">💸 EasyPaisa / JazzCash Details:</p>
+                    <p>Account Number: <span class="font-mono font-bold text-sm text-stone-900">03001234567</span></p>
+                    <p>Account Title: <span class="font-bold text-stone-900">Zylo Organics Store</span></p>
+                    <input type="file" id="wallet-receipt" accept="image/*" class="w-full bg-white border border-stone-300 rounded-lg p-2 text-xs">
+                </div>
+
+                <div id="card-details" class="hidden bg-stone-100 p-4 rounded-2xl border border-stone-200 text-xs space-y-2">
+                    <p class="font-bold text-stone-900">💳 Credit / Debit Card Details:</p>
+                    <input type="text" id="card-num" placeholder="Card Number" class="w-full bg-white border border-stone-300 rounded-lg p-2 text-xs">
+                </div>
+           <div id="payment-proof-field" class="hidden bg-stone-100 p-4 rounded-2xl border border-stone-200">
+    <label class="block text-xs font-bold text-stone-700 mb-2">Transaction / Reference ID:</label>
+    <input type="text" id="txn-id" placeholder="Enter Transaction ID from your app" class="w-full bg-white border border-stone-300 rounded-lg p-2 text-xs">
+</div>
+
+                <button id="place-order-btn" type="submit" disabled class="w-full bg-stone-900 hover:bg-amber-800 text-white font-bold py-4 rounded-xl text-xs uppercase tracking-wider transition-all mt-4 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">Confirm & Place Order</button>
+                <div id="checkout-errors" class="mt-2 text-xs text-red-600"></div>
+            </form>
+        </div>
+    </main>
+
+   <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBPbb16mw5koowrJaPA4D6MG-Yyrg9_liI",
+    authDomain: "zylo-store.firebaseapp.com",
+    databaseURL: "https://zylo-store-default-rtdb.firebaseio.com",
+    projectId: "zylo-store",
+    storageBucket: "zylo-store.firebasestorage.app",
+    messagingSenderId: "89360576006",
+    appId: "1:89360576006:web:3f9168edc387e93e101d87",
+    measurementId: "G-QQLG4E2QVY"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+window.db = db;
+window.ref = ref;
+window.get = get;
+
+const dbRef = ref(db, 'soap_orders');
+
+let cart = JSON.parse(localStorage.getItem('zylo_cart')) || [];
+let selectedAddressValid = false;
+let selectedDeliveryFee = null;
+
+const addressInput = document.getElementById('address-dropdown');
+const nameInput = document.getElementById('c-name');
+const phoneInput = document.getElementById('c-phone');
+const homeAddressInput = document.getElementById('home-address');
+const placeOrderBtn = document.getElementById('place-order-btn');
+const addressFeedback = document.getElementById('address-feedback');
+const subtotalEl = document.getElementById('checkout-subtotal');
+const deliveryFeeEl = document.getElementById('delivery-fee');
+const totalEl = document.getElementById('checkout-total');
+const orderForm = document.getElementById('order-form');
+
+function getCartSubtotal() {
+    return cart.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.quantity || 1)), 0);
+}
+
+function calculateDeliveryFee(addressText) {
+    const normalized = addressText?.toLowerCase() || '';
+    const zoneMap = [
+        { keywords: ['north karachi'], fee: 100 },
+        { keywords: ['new karachi'], fee: 120 },
+        { keywords: ['buffer zone'], fee: 120 },
+        { keywords: ['north nazimabad'], fee: 150 },
+        { keywords: ['federal b area', 'federal b'], fee: 150 },
+        { keywords: ['gulshan-e-iqbal', 'gulshan iqbal', 'gulshan'], fee: 180 },
+        { keywords: ['gulistan-e-johar', 'gulistan johar', 'johar'], fee: 200 },
+        { keywords: ['pechs', 'pech'], fee: 220 },
+        { keywords: ['bahadurabad'], fee: 220 },
+        { keywords: ['saddar'], fee: 250 },
+        { keywords: ['korangi'], fee: 250 },
+        { keywords: ['landhi'], fee: 250 },
+        { keywords: ['malir'], fee: 300 },
+        { keywords: ['clifton'], fee: 300 },
+        { keywords: ['dha'], fee: 350 },
+    ];
+
+    for (const zone of zoneMap) {
+        if (zone.keywords.some(keyword => normalized.includes(keyword))) {
+            return zone.fee;
+        }
+    }
+
+    if (normalized.includes('karachi')) {
+        return 300;
+    }
+
+    return null;
+}
+
+function validateAddressInput() {
+    const addressText = addressInput?.value.trim() || '';
+
+    if (!addressText) {
+        selectedAddressValid = false;
+        selectedDeliveryFee = null;
+        showAddressError('Please enter your delivery address.');
+        return false;
+    }
+
+    const fee = calculateDeliveryFee(addressText);
+    if (fee === null) {
+        selectedAddressValid = false;
+        selectedDeliveryFee = null;
+        showAddressError('Invalid address. Please enter a valid Karachi delivery area.');
+        return false;
+    }
+
+    selectedAddressValid = true;
+    selectedDeliveryFee = fee;
+    clearAddressError();
+    return true;
+}
+
+function showAddressError(message) {
+    if (addressFeedback) {
+        addressFeedback.textContent = message;
+        addressFeedback.classList.remove('text-green-600');
+        addressFeedback.classList.add('text-red-600');
+    }
+}
+
+function clearAddressError() {
+    if (addressFeedback) {
+        addressFeedback.textContent = '';
+    }
+}
+
+function getNumericDeliveryFee() {
+    const subtotal = getCartSubtotal();
+
+    if (!selectedAddressValid || selectedDeliveryFee === null) {
+        return null;
+    }
+
+    if (subtotal >= 1500) {
+        return 0;
+    }
+
+    return selectedDeliveryFee;
+}
+
+function updateSummary() {
+    const subtotal = getCartSubtotal();
+    const deliveryFee = getNumericDeliveryFee();
+    const deliveryAvailable = deliveryFee !== null;
+    const total = deliveryAvailable ? subtotal + deliveryFee : subtotal;
+
+    if (subtotalEl) {
+        subtotalEl.textContent = `Rs. ${subtotal}`;
+    }
+
+    if (deliveryFeeEl) {
+        if (deliveryAvailable && deliveryFee === 0) {
+            deliveryFeeEl.textContent = 'Rs. 0 (Free)';
+            deliveryFeeEl.classList.add('text-green-600');
+            deliveryFeeEl.classList.remove('text-red-600');
+        } else if (deliveryAvailable) {
+            deliveryFeeEl.textContent = `Rs. ${deliveryFee}`;
+            deliveryFeeEl.classList.remove('text-green-600');
+            deliveryFeeEl.classList.remove('text-red-600');
+        } else if (addressInput?.value.trim()) {
+            deliveryFeeEl.textContent = 'Delivery unavailable';
+            deliveryFeeEl.classList.add('text-red-600');
+            deliveryFeeEl.classList.remove('text-green-600');
+        } else {
+            deliveryFeeEl.textContent = 'Please enter address';
+            deliveryFeeEl.classList.remove('text-green-600');
+            deliveryFeeEl.classList.remove('text-red-600');
+        }
+    }
+
+    if (totalEl) {
+        totalEl.textContent = deliveryAvailable ? `Rs. ${total}` : `Rs. ${subtotal}`;
+    }
+
+    renderCartItems();
+    validateCheckoutButton();
+}
+
+function renderCartItems() {
+    const container = document.getElementById('checkout-items');
+    if (!container) return;
+
+    if (cart.length === 0) {
+        container.innerHTML = '<div class="bg-white p-6 rounded-3xl border border-stone-200 text-stone-500">Your cart is empty.</div>';
+        return;
+    }
+
+    container.innerHTML = cart.map((item, index) => {
+        if (!item || !item.name || item.name === 'undefined' || isNaN(item.price)) return '';
+        return `
+        <div class="flex flex-col gap-3 bg-white p-4 rounded-2xl border border-stone-200 md:flex-row md:items-center md:justify-between">
+            <div>
+                <div class="font-semibold text-stone-900">${item.name}</div>
+                <div class="text-sm text-stone-500">Rs. ${item.price} × ${item.quantity || 1}</div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="updateQty(${index}, -1)" class="px-3 py-1 rounded-xl bg-stone-100 text-stone-700 cursor-pointer">-</button>
+                <span class="w-8 text-center font-semibold">${item.quantity || 1}</span>
+                <button type="button" onclick="updateQty(${index}, 1)" class="px-3 py-1 rounded-xl bg-stone-100 text-stone-700 cursor-pointer">+</button>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="font-semibold">Rs. ${Number(item.price) * Number(item.quantity || 1)}</div>
+                <button type="button" onclick="deleteItem(${index})" class="text-red-500 font-bold cursor-pointer">✕</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+window.updateQty = (index, change) => {
+    if (!cart[index]) return;
+    cart[index].quantity = (cart[index].quantity || 1) + change;
+    if (cart[index].quantity <= 0) {
+        cart.splice(index, 1);
+    }
+    localStorage.setItem('zylo_cart', JSON.stringify(cart));
+    updateSummary();
+};
+
+window.deleteItem = (index) => {
+    cart.splice(index, 1);
+    localStorage.setItem('zylo_cart', JSON.stringify(cart));
+    updateSummary();
+};
+
+function validateCheckoutButton() {
+    const nameFilled = nameInput?.value.trim().length > 0;
+    const phoneFilled = /^(03[0-9]{9}|03[0-9]{2}-[0-9]{7})$/.test(phoneInput?.value || '');
+    const homeFilled = homeAddressInput?.value.trim().length > 0;
+    const addressValid = selectedAddressValid && selectedDeliveryFee !== null;
+    const cartHasItems = cart.length > 0;
+    const canCheckout = nameFilled && phoneFilled && homeFilled && addressValid && cartHasItems;
+
+    if (placeOrderBtn) {
+        placeOrderBtn.disabled = !canCheckout;
+    }
+    const errorEl = document.getElementById('checkout-errors');
+    if (errorEl) {
+        const missing = [];
+        if (!nameFilled) missing.push('Name');
+        if (!phoneFilled) missing.push('Phone');
+        if (!homeFilled) missing.push('Home address');
+        if (!addressValid) missing.push('Area selection');
+        if (!cartHasItems) missing.push('Cart is empty');
+        errorEl.textContent = missing.length ? `Missing: ${missing.join(', ')}` : '';
+    }
+}
+
+addressInput?.addEventListener('change', () => {
+    validateAddressInput();
+    updateSummary();
+});
+
+nameInput?.addEventListener('input', validateCheckoutButton);
+phoneInput?.addEventListener('input', validateCheckoutButton);
+homeAddressInput?.addEventListener('input', validateCheckoutButton);
+
+orderForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!nameInput?.value.trim()) {
+        alert('Please enter your name.');
+        return;
+    }
+
+    if (!/^(03[0-9]{9}|03[0-9]{2}-[0-9]{7})$/.test(phoneInput?.value || '')) {
+        alert('Please enter a valid phone number in the format 03XXXXXXXXX or 03XX-XXXXXXX.');
+        return;
+    }
+
+    if (!validateAddressInput()) {
+        alert('Please enter a valid delivery address.');
+        return;
+    }
+
+    if (!homeAddressInput?.value.trim()) {
+        alert('Please enter your complete home address.');
+        return;
+    }
+
+    if (cart.length === 0) {
+        alert('Your cart is empty.');
+        return;
+    }
+
+    const method = document.querySelector('input[name="payment_method"]:checked')?.value || 'COD';
+    const txnId = document.getElementById('txn-id')?.value || '';
+
+    if (method !== 'COD' && txnId.trim().length === 0) {
+        alert('Please enter a valid transaction ID for the selected payment method.');
+        return;
+    }
+
+    const deliveryFeeValue = getNumericDeliveryFee();
+    const totalValue = getCartSubtotal() + (deliveryFeeValue || 0);
+
+    const areaLabel = addressInput.options[addressInput.selectedIndex]?.text || addressInput.value;
+    const finalAddress = `${homeAddressInput.value.trim()}, ${areaLabel}`;
+
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    if (!currentUser) {
+        alert('Please log in before placing an order.');
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const orderPayload = {
+        customerName: nameInput.value.trim(),
+        customerPhone: phoneInput.value.trim(),
+        customerAddress: finalAddress,
+        items: cart,
+        subtotal: getCartSubtotal(),
+        deliveryFee: deliveryFeeValue,
+        total: totalValue,
+        paymentMethod: method,
+        transactionId: txnId.trim(),
+        status: 'Pending',
+        paymentStatus: method === 'COD' ? 'Pending' : 'Verification Pending',
+        timestamp: new Date().toLocaleString(),
+        email: currentUser.email,
+        customerEmail: currentUser.email
+    };
+
+    function generateTrackingId(existingOrders) {
+        let attempts = 0;
+        while (attempts < 10) {
+            const id = 'ZYLO-TRACK-' + Math.random().toString(36).slice(2, 7).toUpperCase();
+            if (!existingOrders.some(o => o.trackingId === id)) return id;
+            attempts++;
+        }
+        return 'ZYLO-TRACK-' + Date.now();
+    }
+
+    function generateNumericOrderId() {
+        function existsInLocal(id) {
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (!key || !key.startsWith('zylo_orders_')) continue;
+                try {
+                    const arr = JSON.parse(localStorage.getItem(key) || '[]');
+                    if (Array.isArray(arr) && arr.some(o => String(o.orderId) === String(id))) return true;
+                } catch (e) { }
+            }
+            return false;
+        }
+
+        let candidate = String(Date.now()) + String(Math.floor(Math.random() * 900 + 100));
+        let attempts = 0;
+        while (attempts < 10) {
+            if (!existsInLocal(candidate)) return candidate;
+            candidate = String(Date.now()) + String(Math.floor(Math.random() * 900 + 100));
+            attempts++;
+        }
+        return candidate;
+    }
+
+    const ordersKey = `zylo_orders_${encodeURIComponent(currentUser.email)}`;
+    const existingLocalOrders = JSON.parse(localStorage.getItem(ordersKey) || '[]');
+    orderPayload.trackingId = generateTrackingId(existingLocalOrders);
+    orderPayload.orderId = generateNumericOrderId();
+
+    const newOrder = await push(dbRef, orderPayload);
+
+    try {
+        const toSave = Object.assign({ id: newOrder.key, orderId: orderPayload.orderId }, orderPayload);
+        existingLocalOrders.push(toSave);
+        localStorage.setItem(ordersKey, JSON.stringify(existingLocalOrders));
+    } catch (e) {
+        console.error('Failed to save order locally', e);
+    }
+
+    localStorage.removeItem('zylo_cart');
+    const params = new URLSearchParams({ id: newOrder.key, tracking: orderPayload.trackingId, orderId: orderPayload.orderId, name: currentUser.name });
+    window.location.href = `success.html?${params.toString()}`;
+});
+
+window.switchPayment = (type) => {
+    document.getElementById('wallet-details').classList.add('hidden');
+    document.getElementById('card-details').classList.add('hidden');
+    document.getElementById('payment-proof-field').classList.add('hidden');
+
+    if (type === 'wallet' || type === 'card') {
+        document.getElementById('payment-proof-field').classList.remove('hidden');
+        if (type === 'wallet') document.getElementById('wallet-details').classList.remove('hidden');
+        if (type === 'card') document.getElementById('card-details').classList.remove('hidden');
+    }
+};
+
+function initializePage() {
+    updateSummary();
+    validateCheckoutButton();
+}
+
+initializePage();
+
+const menuBtn = document.getElementById('menuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+menuBtn?.addEventListener('click', () => {
+        mobileMenu?.classList.toggle('hidden');
+});
+
+</script>
+
+<!-- Profile Modal Box -->
+<div id="profile-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 overflow-y-auto hidden">
+    
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 md:p-8 border border-stone-200 shadow-2xl space-y-6 relative max-h-[85vh] overflow-y-auto my-auto">
+        
+        <button onclick="toggleProfileModal()" class="absolute top-6 right-6 text-stone-400 hover:text-stone-900 font-bold text-xl cursor-pointer">✕</button>
+        
+        <div class="flex items-center gap-4 border-b border-stone-100 pb-4">
+            <div class="w-14 h-14 bg-amber-100 text-amber-800 rounded-full flex items-center justify-center text-xl font-bold border border-amber-200">👤</div>
+            <div>
+                <h3 id="profile-user-name" class="serif-font text-2xl font-bold text-stone-900">User Name</h3>
+                <p id="profile-user-email" class="text-xs text-stone-500">user@gmail.com</p>
+                <span id="profile-verify-badge" class="inline-block mt-1 text-[10px] bg-green-100 text-green-800 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Active Member</span>
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-400">Your Recent Orders</h4>
+            <div id="profile-orders-list" class="space-y-3 max-h-[350px] overflow-y-auto pr-1"></div>
+        </div>
+
+        <div class="flex justify-between items-center pt-4 border-t border-stone-100">
+            <div class="flex items-center gap-3">
+                <button id="profile-track-my-order-btn" onclick="profileTrackMostRecent()" class="text-xs font-bold text-white bg-amber-800 px-3 py-2 rounded-lg hover:bg-amber-900 cursor-pointer">Track My Order</button>
+            </div>
+            <button onclick="logout()" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer">Logout</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    (function(){
+        const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        const headerNameEl = document.getElementById('header-user-btn-name');
+        if (current && headerNameEl) headerNameEl.textContent = current.name;
+    })();
+
+    window.toggleProfileModal = function() {
+        const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (!current) { alert('Please log in to view your profile.'); window.location.href='login.html'; return; }
+        document.getElementById('profile-user-name').textContent = current.name;
+        document.getElementById('profile-user-email').textContent = current.email;
+        loadProfileOrders();
+        document.getElementById('profile-modal').classList.toggle('hidden');
+    }
+
+    window.logout = function() {
+        document.getElementById('profile-modal').classList.add('hidden');
+        localStorage.removeItem('currentUser');
+        const headerNameEl = document.getElementById('header-user-btn-name');
+        if (headerNameEl) headerNameEl.textContent = 'Customer';
+        window.location.href = 'login.html';
+    }
+
+    window.getUserOrders = function(email) {
+        const key = `zylo_orders_${encodeURIComponent(email)}`;
+        try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { return []; }
+    }
+
+    window.renderOrdersList = function(orders) {
+        const container = document.querySelector('#profile-orders-list');
+        if (!container) return;
+        container.innerHTML = '';
+        if (!orders || orders.length === 0) { container.innerHTML = '<div class="text-sm text-stone-500 py-6 text-center">No recent orders found.</div>'; return; }
+        orders.slice().reverse().forEach(order => {
+            const el = document.createElement('div');
+            el.className = 'bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-2';
+            el.innerHTML = `
+                    <div class="flex justify-between items-center text-xs">
+                            <span class="font-semibold text-stone-800">Order ID: <span class="font-mono">${order.orderId || order.id || '-'}</span></span>
+                        <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold text-[10px]">${order.status || 'Unknown'}</span>
+                    </div>
+                <div class="text-xs text-stone-600 space-y-1">
+                    <p><strong>Items:</strong> ${order.items?.length || 0}</p>
+                    <p><strong>Total Amount:</strong> Rs. ${order.total || order.subtotal || 0}</p>
+                    <p class="text-amber-800 font-mono font-semibold pt-1"><strong>Tracking ID:</strong> <span class="bg-white px-2 py-1 border border-stone-200 rounded-md">${order.trackingId || '-'}</span></p>
+                    <p class="text-xs text-stone-500">${order.timestamp || ''}</p>
+                </div>
+            `;
+            el.innerHTML += `<p class="mt-2"><a href="track.html?id=${encodeURIComponent(order.trackingId || '')}" class="bg-amber-800 text-white px-3 py-2 rounded-lg hover:bg-amber-900 text-xs font-bold inline-block">Track Order</a></p>`;
+            container.appendChild(el);
+        });
+    }
+
+   window.loadProfileOrders = async function() {
+    const container = document.querySelector('#profile-orders-list');
+    if (!container) return;
+
+    const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    if (!current || !current.email) {
+        container.innerHTML = '<div class="text-sm text-stone-500 py-6 text-center">Please log in to view your orders.</div>';
+        return;
+    }
+
+    container.innerHTML = '<div class="text-sm text-stone-500 py-6 text-center">Loading your orders...</div>';
+
+    let userOrders = [];
+
+    try {
+        const snapshot = await get(ref(db, 'soap_orders'));
+        if (snapshot.exists()) {
+            snapshot.forEach(child => {
+                const val = child.val();
+                if (val && val.email && val.email.toLowerCase() === current.email.toLowerCase()) {
+                    userOrders.push(val);
+                }
+            });
+        }
+    } catch (err) {
+        console.warn('Firebase fetch failed, checking local storage:', err);
+    }
+
+    if (userOrders.length === 0) {
+        userOrders = getUserOrders(current.email);
+    }
+
+    renderOrdersList(userOrders);
+}
+
+window.profileTrackMostRecent = async function() {
+    const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    if (!current || !current.email) { 
+        alert('Please log in first.'); 
+        window.location.href = 'login.html'; 
+        return; 
+    } 
+
+    let userOrders = [];
+    try {
+        const snapshot = await get(ref(db, 'soap_orders'));
+        if (snapshot.exists()) {
+            snapshot.forEach(child => {
+                const val = child.val();
+                if (val && val.email && val.email.toLowerCase() === current.email.toLowerCase()) {
+                    userOrders.push(val);
+                }
+            });
+        }
+    } catch (err) {}
+
+    if (userOrders.length === 0) {
+        userOrders = getUserOrders(current.email) || [];
+    }
+
+    if (!userOrders.length) { 
+        alert('No orders found for your account.'); 
+        return; 
+    } 
+
+    const last = userOrders[userOrders.length - 1]; 
+    const tid = last && last.trackingId ? last.trackingId : null; 
+    
+    if (!tid) { 
+        alert('The selected order does not have a tracking ID.'); 
+        return; 
+    } 
+
+    window.location.href = `track.html?id=${encodeURIComponent(tid)}`; 
+}
+</script>
+
+</body>
+</html>

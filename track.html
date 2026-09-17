@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Order | Zylo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-50 p-6">
+    <header class="sticky top-0 z-50 bg-white border-b mb-6">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="index.html" class="text-3xl font-bold">ZYLO</a>
+            <nav class="flex items-center gap-4">
+                <button onclick="toggleProfileModal()" class="bg-amber-800 text-white px-4 py-2 rounded-lg hover:bg-stone-900 transition-colors flex items-center gap-2 font-medium cursor-pointer"><span>👤</span><span id="header-user-btn-name">Customer</span></button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="max-w-md mx-auto bg-white p-8 rounded-3xl border border-stone-200 mt-12 text-center shadow-sm">
+        <h1 class="text-2xl font-bold mb-6 text-stone-900">Track Your Order</h1>
+        <input type="text" id="track-id-input" placeholder="Enter Tracking ID" class="w-full p-3 border border-stone-300 rounded-xl mb-4 focus:outline-none focus:border-amber-700">
+        <button onclick="trackOrder()" class="w-full bg-stone-900 hover:bg-amber-800 text-white py-3 rounded-xl font-bold transition-all cursor-pointer">Track Now</button>
+        
+        <div id="status-result" class="mt-6 p-4 bg-stone-100 rounded-xl hidden">
+            <p class="text-sm text-stone-600">Order Status: <span id="status-display" class="font-bold text-amber-800"></span></p>
+        </div>
+
+        <!-- Back to Home Link/Button -->
+        <div class="mt-6 pt-4 border-t border-stone-100">
+            <a href="index.html" class="inline-flex items-center gap-2 text-sm font-bold text-amber-800 hover:text-stone-900 transition-colors">
+                <span>←</span> Back to Home
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Overlay Box (Profile Modal) -->
+    <div id="profile-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 overflow-y-auto hidden">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-6 md:p-8 border border-stone-200 shadow-2xl space-y-6 relative max-h-[85vh] overflow-y-auto my-auto">
+            <button onclick="toggleProfileModal()" class="absolute top-6 right-6 text-stone-400 hover:text-stone-900 font-bold text-xl cursor-pointer">✕</button>
+            
+            <div class="flex items-center gap-4 border-b border-stone-100 pb-4">
+                <div class="w-14 h-14 bg-amber-100 text-amber-800 rounded-full flex items-center justify-center text-xl font-bold border border-amber-200">👤</div>
+                <div>
+                    <h3 id="profile-user-name" class="serif-font text-2xl font-bold text-stone-900">User Name</h3>
+                    <p id="profile-user-email" class="text-xs text-stone-500">user@gmail.com</p>
+                    <span id="profile-verify-badge" class="inline-block mt-1 text-[10px] bg-green-100 text-green-800 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Active Member</span>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-stone-400">Your Recent Orders</h4>
+                <div id="profile-orders-list" class="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+                    <div class="text-sm text-stone-500 py-6 text-center">Loading orders...</div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-4 border-t border-stone-100">
+                <div class="flex items-center gap-3">
+                    <button id="profile-track-my-order-btn" onclick="profileTrackMostRecent()" class="text-xs font-bold text-white bg-amber-800 px-3 py-2 rounded-lg hover:bg-amber-900 cursor-pointer">Track My Order</button>
+                    <a href="track.html" class="text-xs font-bold text-amber-800 hover:underline flex items-center gap-1"><span>Track Order Status</span> →</a>
+                </div>
+                <button onclick="logout()" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer">Logout</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase Script & Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyBPbb16mw5koowrJaPA4D6MG-Yyrg9_liI",
+            authDomain: "zylo-store.firebaseapp.com",
+            databaseURL: "https://zylo-store-default-rtdb.firebaseio.com",
+            projectId: "zylo-store",
+            storageBucket: "zylo-store.firebasestorage.app",
+            messagingSenderId: "89360576006",
+            appId: "1:89360576006:web:3f9168edc387e93e101d87"
+        };
+        
+        const db = getDatabase(initializeApp(firebaseConfig));
+
+        // 1. Set User Name on Track Page Header automatically
+        document.addEventListener('DOMContentLoaded', () => {
+            const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (current && current.name) {
+                const nameEl = document.getElementById('header-user-btn-name');
+                if (nameEl) nameEl.textContent = current.name;
+            }
+        });
+
+        // 2. Profile Modal Toggle Function (Global)
+        window.toggleProfileModal = function() {
+            const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if(!current){ 
+                alert('Please log in to view your profile.'); 
+                window.location.href='login.html'; 
+                return;
+            }
+
+            document.getElementById('profile-user-name').textContent = current.name || 'Customer';
+            document.getElementById('profile-user-email').textContent = current.email || '';
+            
+            const modal = document.getElementById('profile-modal');
+            if(modal) {
+                modal.classList.toggle('hidden');
+                if(!modal.classList.contains('hidden')) {
+                    loadProfileOrders();
+                }
+            }
+        };
+
+        window.logout = function() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        };
+
+        // 3. Global Track Order Function (Strictly verified with logged-in user email)
+        window.trackOrder = async function(manualId = null) {
+            const id = manualId || document.getElementById('track-id-input').value.trim();
+            if (!id) { alert("Please enter a Tracking ID"); return; }
+
+            document.getElementById('track-id-input').value = id;
+            const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+
+            try {
+                const snapshot = await get(ref(db, 'soap_orders'));
+                if (snapshot.exists()) {
+                    let found = null;
+                    snapshot.forEach(child => {
+                        const val = child.val();
+                        if (val && String(val.trackingId || '').toLowerCase() === id.toLowerCase()) {
+                            if (current && current.email && val.email && val.email.toLowerCase() !== current.email.toLowerCase()) {
+                                return; // Ignore if order email doesn't match logged in user email
+                            }
+                            found = val;
+                            return true;
+                        }
+                    });
+
+                    if (found) {
+                        displayTrackStatus(found.status || 'Pending');
+                    } else {
+                        alert("Invalid Tracking ID or it does not belong to your account!");
+                        document.getElementById('status-result').classList.add('hidden');
+                    }
+                } else {
+                    alert("No orders found in the database.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Error fetching tracking data!");
+            }
+        };
+
+        function displayTrackStatus(status) {
+            document.getElementById('status-result').classList.remove('hidden');
+            const statusSpan = document.getElementById('status-display');
+            statusSpan.innerText = status;
+            statusSpan.className = 'font-bold ';
+            if (status === 'Pending') statusSpan.classList.add('text-amber-600');
+            else if (status === 'Processing') statusSpan.classList.add('text-sky-600');
+            else if (status === 'Ready to Deliver') statusSpan.classList.add('text-purple-600');
+            else if (status === 'Dispatched') statusSpan.classList.add('text-blue-600');
+            else if (status === 'Delivered' || status === 'Completed') statusSpan.classList.add('text-emerald-600');
+            else if (status === 'Cancelled') statusSpan.classList.add('text-red-600');
+            else statusSpan.classList.add('text-stone-800');
+        }
+
+        // 4. Profile Modal Orders Loader (Strictly filtered by current user email)
+        window.loadProfileOrders = async function() {
+            const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            const container = document.querySelector('#profile-orders-list');
+            if (!container) return;
+
+            if (!current || !current.email) {
+                container.innerHTML = '<div class="text-sm text-stone-500 py-6 text-center">Please log in to view orders.</div>';
+                return;
+            }
+
+            container.innerHTML = '<div class="text-sm text-stone-500 py-6 text-center">Loading orders...</div>';
+
+            try {
+                const snapshot = await get(ref(db, 'soap_orders'));
+                let userOrders = [];
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        const val = child.val();
+                        if (val && val.email && current.email && val.email.toLowerCase() === current.email.toLowerCase()) {
+                            userOrders.push(val);
+                        }
+                    });
+                }
+
+                if (userOrders.length === 0) {
+                    container.innerHTML = '<div class="text-sm text-stone-500 py-6 text-center">No orders found for this account.</div>';
+                    return;
+                }
+
+                container.innerHTML = userOrders.slice().reverse().map(order => {
+                    const currentStatus = order.status || 'Pending';
+                    let badgeClass = 'bg-amber-100 text-amber-800';
+                    if (currentStatus === 'Ready to Deliver') badgeClass = 'bg-purple-100 text-purple-800';
+                    else if (currentStatus === 'Cancelled') badgeClass = 'bg-red-100 text-red-800';
+                    else if (currentStatus === 'Completed' || currentStatus === 'Delivered') badgeClass = 'bg-emerald-100 text-emerald-800';
+
+                    return `
+                        <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-semibold text-stone-800">Tracking ID: <span class="font-mono text-amber-800">${order.trackingId || '-'}</span></span>
+                                <span class="${badgeClass} px-2.5 py-0.5 rounded-full font-bold text-[10px]">${currentStatus}</span>
+                            </div>
+                            <div class="text-xs text-stone-600 space-y-1">
+                                <p><strong>Total Amount:</strong> Rs. ${order.total || order.subtotal || 0}</p>
+                                <p class="text-stone-500">${order.timestamp || ''}</p>
+                                <p class="mt-2">
+                                    <button onclick="window.location.href='track.html?id=${encodeURIComponent(order.trackingId || '')}'" class="bg-amber-800 text-white px-3 py-2 rounded-lg hover:bg-amber-900 text-xs font-bold inline-block cursor-pointer">Track Order</button>
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<div class="text-sm text-red-500 py-6 text-center">Failed to load orders.</div>';
+            }
+        }
+
+        window.profileTrackMostRecent = async function() {
+            const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if(!current || !current.email){ alert('Please log in first.'); window.location.href='login.html'; return;}
+            
+            try {
+                const snapshot = await get(ref(db, 'soap_orders'));
+                let latestTid = null;
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        const val = child.val();
+                        if (val && val.trackingId && val.email && val.email.toLowerCase() === current.email.toLowerCase()) {
+                            latestTid = val.trackingId;
+                        }
+                    });
+                }
+                if(latestTid) {
+                    window.location.href = `track.html?id=${encodeURIComponent(latestTid)}`;
+                } else {
+                    alert('No tracking ID found for your account.');
+                }
+            } catch(e) {
+                alert('Error fetching tracking details.');
+            }
+        }
+
+        // Instant auto-run search on track page if URL has ID parameter
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const tid = params.get('tracking') || params.get('id');
+                if (tid) {
+                    window.trackOrder(tid); 
+                }
+            } catch(e) {}
+        });
+    </script>
+</body>
+</html>

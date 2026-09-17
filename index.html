@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Zylo Store</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;450;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; } 
+        .serif-font { font-family: 'Playfair Display', serif; }
+        @media (max-width: 768px) {
+            .container { width: 95%; }
+            .nav-menu { display: none; }
+        }
+        @media (max-width:768px){
+            #mobileMenu{
+                position:absolute;
+                top:80px;
+                left:0;
+                width:100%;
+                background:white;
+                padding:20px;
+                z-index:999;
+                box-shadow:0 5px 15px rgba(0,0,0,0.1);
+                display:flex;
+                flex-direction:column;
+            }
+            #mobileMenu.hidden{
+                display:none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-850 antialiased min-h-screen flex flex-col justify-between">
+
+   <header class="sticky top-0 z-50 bg-white border-b border-stone-200">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+
+        <a href="index.html" class="text-3xl font-bold tracking-tight text-stone-900">
+          ZYLO
+        </a>
+
+        <button id="menuBtn" class="md:hidden text-3xl cursor-pointer">
+          ☰
+        </button>
+
+        <nav id="mobileMenu" class="hidden flex-col items-start gap-4 text-sm font-medium text-stone-600 md:flex md:flex-row md:items-center md:gap-8">
+          <a href="index.html" class="hover:text-amber-800 transition-colors">Home</a>
+          <a href="produce.html" class="hover:text-amber-800 transition-colors">Products</a>
+          <a href="about.html" class="hover:text-amber-800 transition-colors">About</a>
+          <a href="checkout.html" class="hover:text-amber-800 transition-colors">Checkout</a>
+
+          <!-- Profile Button -->
+          <button onclick="toggleProfileModal()" class="bg-amber-800 text-white px-4 py-2 rounded-lg hover:bg-stone-900 transition-colors flex items-center gap-2 font-medium cursor-pointer">
+            <span>👤</span>
+            <span id="header-user-btn-name">Customer</span>
+          </button>
+        </nav>
+
+      </div>
+   </header>
+
+    <!-- HERO SECTION -->
+    <section class="max-w-7xl mx-auto px-6 py-20 text-center space-y-6">
+        <span class="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-50 px-4 py-1.5 rounded-full border border-amber-200/60 inline-block">100% Organic & Handmade</span>
+        <h1 class="serif-font text-5xl md:text-7xl text-stone-900 font-bold max-w-4xl mx-auto leading-tight">
+            Reveal Your Skin's <br><span class="italic text-amber-700 font-normal">Natural Glow</span>
+        </h1>
+        <p class="text-stone-500 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+            Zylo luxury soaps are crafted with pure essential oils, natural botanicals, and rich butter to cleanse, nourish, and deeply hydrate your skin.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+            <a href="produce.html" class="bg-stone-900 hover:bg-amber-800 text-white font-bold px-8 py-4 rounded-full text-xs uppercase tracking-wider transition-all shadow-md">Explore Products</a>
+            <a href="about.html" class="bg-white border border-stone-300 text-stone-800 hover:bg-stone-50 font-bold px-8 py-4 rounded-full text-xs uppercase tracking-wider transition-all">Our Story</a>
+        </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="max-w-7xl mx-auto px-6 py-16 border-t border-stone-200/60">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs hover:border-amber-700 transition-all cursor-pointer group">
+                <span class="text-2xl mb-2 block">🌿</span>
+                <h4 class="font-bold text-stone-900 text-sm">Herbal</h4>
+                <p class="text-xs text-stone-400 mt-1">Calming & rejuvenating</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs hover:border-amber-700 transition-all cursor-pointer group">
+                <span class="text-2xl mb-2 block">🌺</span>
+                <h4 class="font-bold text-stone-900 text-sm">Floral</h4>
+                <p class="text-xs text-stone-400 mt-1">Elegant & nourishing</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs hover:border-amber-700 transition-all cursor-pointer group">
+                <span class="text-2xl mb-2 block">🍋</span>
+                <h4 class="font-bold text-stone-900 text-sm">Citrus</h4>
+                <p class="text-xs text-stone-400 mt-1">Fresh & energizing</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs hover:border-amber-700 transition-all cursor-pointer group">
+                <span class="text-2xl mb-2 block">🥛</span>
+                <h4 class="font-bold text-stone-900 text-sm">Creamy</h4>
+                <p class="text-xs text-stone-400 mt-1">Moisturizing & gentle</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs hover:border-amber-700 transition-all cursor-pointer group col-span-2 md:col-span-1">
+                <span class="text-2xl mb-2 block">🌌</span>
+                <h4 class="font-bold text-stone-900 text-sm">Detoxifying</h4>
+                <p class="text-xs text-stone-400 mt-1">Deep cleansing action</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- REVIEWS -->
+    <section class="bg-stone-100 py-20 border-t border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="serif-font text-3xl md:text-4xl font-bold text-stone-900 mb-2">Customer Reviews</h2>
+            <p class="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-12">Loved by skincare enthusiasts worldwide</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                <div class="bg-white p-8 rounded-3xl border border-stone-200 space-y-4 shadow-xs">
+                    <div class="text-amber-500 text-sm tracking-widest">★★★★★</div>
+                    <p class="text-stone-600 text-sm italic leading-relaxed">
+                        "Zylo soaps have completely transformed my skin. The quality is exceptional and the natural ingredients are so refreshing!"
+                    </p>
+                    <h5 class="text-xs font-bold text-stone-900 uppercase tracking-wider">— Sarah Johnson</h5>
+                </div>
+                <div class="bg-white p-8 rounded-3xl border border-stone-200 space-y-4 shadow-xs">
+                    <div class="text-amber-500 text-sm tracking-widest">★★★★★</div>
+                    <p class="text-stone-600 text-sm italic leading-relaxed">
+                        "Finally found skincare that doesn't irritate my sensitive skin. The Tea Tree & Mint Soap is my absolute favorite!"
+                    </p>
+                    <h5 class="text-xs font-bold text-stone-900 uppercase tracking-wider">— Emma Davis</h5>
+                </div>
+                <div class="bg-white p-8 rounded-3xl border border-stone-200 space-y-4 shadow-xs">
+                    <div class="text-amber-500 text-sm tracking-widest">★★★★★</div>
+                    <p class="text-stone-600 text-sm italic leading-relaxed">
+                        "The luxury packaging and premium quality make these soaps the perfect gift. Worth every single penny!"
+                    </p>
+                    <h5 class="text-xs font-bold text-stone-900 uppercase tracking-wider">— Michael Chen</h5>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="max-w-7xl mx-auto px-6 py-20 text-center">
+        <h2 class="serif-font text-3xl font-bold text-stone-900 mb-2">By the Numbers</h2>
+        <p class="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-12">Join thousands of satisfied customers</p>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            <div class="space-y-1">
+                <div class="text-3xl md:text-4xl font-bold text-amber-800 font-mono">50K+</div>
+                <div class="text-xs text-stone-500 font-medium uppercase tracking-wider">Happy Customers</div>
+            </div>
+            <div class="space-y-1">
+                <div class="text-3xl md:text-4xl font-bold text-stone-900 font-mono">100%</div>
+                <div class="text-xs text-stone-500 font-medium uppercase tracking-wider">Natural Ingredients</div>
+            </div>
+            <div class="space-y-1">
+                <div class="text-3xl md:text-4xl font-bold text-stone-900 font-mono">12+</div>
+                <div class="text-xs text-stone-500 font-medium uppercase tracking-wider">Premium Products</div>
+            </div>
+            <div class="space-y-1">
+                <div class="text-3xl md:text-4xl font-bold text-stone-900 font-mono">30+</div>
+                <div class="text-xs text-stone-500 font-medium uppercase tracking-wider">Awards Won</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="bg-amber-50/40 border-t border-stone-200 py-16 text-center">
+        <div class="max-w-md mx-auto px-6 space-y-4">
+            <h3 class="serif-font text-2xl md:text-3xl font-bold text-stone-900">Subscribe to Our Newsletter</h3>
+            <p class="text-xs text-stone-500 tracking-wide">Get exclusive offers and skincare tips delivered right to your inbox.</p>
+            <form onsubmit="event.preventDefault(); alert('Subscribed successfully!');" class="flex items-center bg-white border border-stone-300 rounded-full p-1.5 focus-within:border-amber-700 transition-colors mt-4 shadow-xs">
+                <input type="email" placeholder="Enter your email" required class="flex-1 bg-transparent px-4 py-2 text-sm focus:outline-none text-stone-900">
+                <button type="submit" class="bg-stone-900 hover:bg-amber-800 text-white font-bold px-6 py-2 rounded-full text-xs uppercase tracking-wider transition-all cursor-pointer">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- WHATSAPP FLOAT -->
+    <a href="https://wa.me/923001234567" target="_blank" class="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform z-50 flex items-center justify-center gap-2 font-medium text-sm">
+        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.717-1.456L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.413 9.863-9.831.002-2.624-1.013-5.088-2.859-6.937C16.578 1.989 14.13 1.95 12.005 1.95 6.57 1.95 2.147 6.362 2.144 11.78-.001 1.696.449 3.351 1.3 4.933l-.994 3.633 3.72-.975z"/></svg>
+        <span>Chat with us</span>
+    </a>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-stone-200 bg-stone-100 py-12 text-xs text-stone-500">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-3">
+                <h4 class="text-stone-900 font-bold text-sm serif-font tracking-widest">ZYLO</h4>
+                <p class="leading-relaxed">Premium organic & skincare soaps for everyone, made elegantly with natural ingredients.</p>
+            </div>
+            <div class="space-y-2">
+                <h4 class="text-stone-900 font-bold uppercase tracking-wider text-[11px]">Shop</h4>
+                <p><a href="produce.html" class="hover:text-amber-800 transition-colors">All Products</a></p>
+                <p><a href="#" class="hover:text-amber-800 transition-colors">New Arrivals</a></p>
+                <p><a href="#" class="hover:text-amber-800 transition-colors">Bestsellers</a></p>
+            </div>
+            <div class="space-y-2">
+                <h4 class="text-stone-900 font-bold uppercase tracking-wider text-[11px]">Company</h4>
+                <p><a href="about.html" class="hover:text-amber-800 transition-colors">About Us</a></p>
+                <p><a href="#" class="hover:text-amber-800 transition-colors">Privacy Policy</a></p>
+                <p><a href="#" class="hover:text-amber-800 transition-colors">Terms of Service</a></p>
+            </div>
+            <div class="space-y-2">
+                <h4 class="text-stone-900 font-bold uppercase tracking-wider text-[11px]">Connect</h4>
+                <p><a href="#" class="hover:text-amber-800 transition-colors">Instagram</a></p>
+                <p><a href="#" class="hover:text-amber-800 transition-colors">Facebook</a></p>
+                <p><a href="#" class="hover:text-amber-800 transition-colors">Twitter</a></p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 mt-8 pt-6 border-t border-stone-200 text-center text-[11px] text-stone-400">
+            <p>&copy; 2026 ZYLO. All rights reserved. Luxury Skincare for Everyone.</p>
+        </div>
+    </footer>
+
+<!-- Profile Modal Box -->
+<div id="profile-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 overflow-y-auto hidden">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 md:p-8 border border-stone-200 shadow-2xl space-y-6 relative max-h-[85vh] overflow-y-auto my-auto">
+        <button onclick="toggleProfileModal()" class="absolute top-6 right-6 text-stone-400 hover:text-stone-900 font-bold text-xl cursor-pointer">✕</button>
+        
+        <div class="flex items-center gap-4 border-b border-stone-100 pb-4">
+            <div class="w-14 h-14 bg-amber-100 text-amber-800 rounded-full flex items-center justify-center text-xl font-bold border border-amber-200">👤</div>
+            <div>
+                <h3 id="profile-user-name" class="serif-font text-2xl font-bold text-stone-900">User Name</h3>
+                <p id="profile-user-email" class="text-xs text-stone-500">user@gmail.com</p>
+                <span id="profile-verify-badge" class="inline-block mt-1 text-[10px] bg-green-100 text-green-800 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Active Member</span>
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-400">YOUR RECENT ORDERS</h4>
+            <div id="profile-orders-list" class="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+                <div class="text-sm text-stone-500 py-6 text-center">Loading orders from database...</div>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center pt-4 border-t border-stone-100">
+            <div class="flex items-center gap-3">
+                <button id="profile-track-my-order-btn" onclick="profileTrackMostRecent()" class="bg-stone-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-amber-800 transition-colors cursor-pointer">Track My Order</button>
+                <a href="track.html" class="text-xs font-bold text-stone-600 hover:text-amber-800 transition-colors">Track Order Status →</a>
+            </div>
+            <button onclick="logout()" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer">Logout</button>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase & Script Logic -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyBPbb16mw5koowrJaPA4D6MG-Yyrg9_liI",
+        authDomain: "zylo-store.firebaseapp.com",
+        databaseURL: "https://zylo-store-default-rtdb.firebaseio.com",
+        projectId: "zylo-store",
+        storageBucket: "zylo-store.firebasestorage.app",
+        messagingSenderId: "89360576006",
+        appId: "1:89360576006:web:3f9168edc387e93e101d87"
+    };
+    
+    const db = getDatabase(initializeApp(firebaseConfig));
+
+    // Mobile Menu Toggle
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    if(menuBtn && mobileMenu) {
+        menuBtn.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+        });
+    }
+
+    // Sync header user name on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        const headerNameEl = document.getElementById('header-user-btn-name');
+        if (current && headerNameEl && current.name) {
+            headerNameEl.textContent = current.name;
+        }
+    });
+
+    window.toggleProfileModal = function() {
+        const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (!current) { alert('Please log in to view your profile.'); window.location.href='login.html'; return; }
+        
+        document.getElementById('profile-user-name').textContent = current.name || 'Customer';
+        document.getElementById('profile-user-email').textContent = current.email || '';
+        
+        const modal = document.getElementById('profile-modal');
+        if(modal) {
+            modal.classList.toggle('hidden');
+            if(!modal.classList.contains('hidden')) {
+                loadProfileOrders();
+            }
+        }
+    }
+
+    window.logout = function() {
+        document.getElementById('profile-modal').classList.add('hidden');
+        localStorage.removeItem('currentUser');
+        const headerNameEl = document.getElementById('header-user-btn-name');
+        if (headerNameEl) headerNameEl.textContent = 'Customer';
+        window.location.href = 'login.html';
+    }
+
+    window.loadProfileOrders = async function() {
+        const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        const container = document.querySelector('#profile-orders-list');
+        if (!container) return;
+
+        if (!current || !current.email) {
+            container.innerHTML = '<div class="text-sm text-stone-500 py-6 text-center">Please log in to view orders.</div>';
+            return;
+        }
+
+        container.innerHTML = '<div class="text-sm text-stone-500 py-6 text-center">Loading live orders...</div>';
+
+        try {
+            const snapshot = await get(ref(db, 'soap_orders'));
+            let userOrders = [];
+            if (snapshot.exists()) {
+                snapshot.forEach(child => {
+                    const val = child.val();
+                    // Fixed: check both val.email and val.gmail to match correctly with the current user's email
+                    const orderEmail = val.email || val.gmail;
+                    if (val && orderEmail && orderEmail.toLowerCase() === current.email.toLowerCase()) {
+                        userOrders.push(val);
+                    }
+                });
+            }
+
+            if (userOrders.length === 0) {
+                container.innerHTML = '<div class="text-sm text-stone-500 py-6 text-center">No recent orders found for this account.</div>';
+                return;
+            }
+
+            container.innerHTML = userOrders.slice().reverse().map(order => {
+                const currentStatus = order.status || 'Pending';
+                
+                let badgeClass = 'bg-amber-100 text-amber-800';
+                if (currentStatus === 'Ready to Deliver') badgeClass = 'bg-purple-100 text-purple-800';
+                else if (currentStatus === 'Cancelled') badgeClass = 'bg-red-100 text-red-800';
+                else if (currentStatus === 'Processing') badgeClass = 'bg-sky-100 text-sky-800';
+                else if (currentStatus === 'Completed' || currentStatus === 'Delivered') badgeClass = 'bg-emerald-100 text-emerald-800';
+
+                return `
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-2">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-semibold text-stone-800">Order ID: <span class="font-mono text-stone-900">${order.orderId || order.id || '-'}</span></span>
+                            <span class="${badgeClass} px-2.5 py-0.5 rounded-full font-bold text-[10px]">${currentStatus}</span>
+                        </div>
+                        <div class="text-xs text-stone-600 space-y-1">
+                            ${order.itemsSummary ? `<p><strong>Items:</strong> ${order.itemsSummary}</p>` : ''}
+                            <p><strong>Total Amount:</strong> Rs. ${order.total || order.subtotal || 0}</p>
+                            <p class="font-semibold text-stone-800 pt-0.5">Tracking ID: <span class="font-mono text-amber-800">${order.trackingId || '-'}</span></p>
+                            <p class="text-stone-500">${order.timestamp || ''}</p>
+                            <p class="mt-2">
+                                <button onclick="window.location.href='track.html?id=${encodeURIComponent(order.trackingId || '')}'" class="bg-amber-800 text-white px-3 py-2 rounded-lg hover:bg-amber-900 text-xs font-bold inline-block cursor-pointer">Track Order</button>
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+        } catch (err) {
+            console.error(err);
+            container.innerHTML = '<div class="text-sm text-red-500 py-6 text-center">Failed to load orders.</div>';
+        }
+    }
+    
+    window.profileTrackMostRecent = async function() {
+        const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if(!current || !current.email){ alert('Please log in first.'); window.location.href='login.html'; return;}
+        
+        try {
+            const snapshot = await get(ref(db, 'soap_orders'));
+            let latestTid = null;
+            if (snapshot.exists()) {
+                snapshot.forEach(child => {
+                    const val = child.val();
+                    const orderEmail = val.email || val.gmail;
+                    if (val && val.trackingId && orderEmail && orderEmail.toLowerCase() === current.email.toLowerCase()) {
+                        latestTid = val.trackingId;
+                    }
+                });
+            }
+            if(latestTid) {
+                window.location.href = `track.html?id=${encodeURIComponent(latestTid)}`;
+            } else {
+                alert('No tracking ID found for your account.');
+            }
+        } catch(e) {
+            alert('Error fetching tracking details.');
+        }
+    }
+</script>
+
+</body>
+</html>

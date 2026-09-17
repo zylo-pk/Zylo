@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Products | Zylo</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #FAF8F5;
+            color: #1C1B19;
+        }
+        @media (max-width: 768px) {
+            .container { width: 95%; }
+            .nav-menu { display: none; }
+        }
+        .serif-title { font-family: 'Playfair Display', serif; }
+        .brand-bronze { color: #B35B21; }
+        .brand-bg-bronze { background-color: #B35B21; }
+        .brand-dark { background-color: #1C1B19; color: #FAF8F5; }
+        
+        .luxury-product-card {
+            background: #FFFFFF;
+            border: 1px solid #EAE6DF;
+            border-radius: 20px;
+            padding: 16px;
+            width: 100%;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        .luxury-product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -15px rgba(28, 27, 25, 0.08);
+            border-color: #B35B21;
+        }
+        
+        .image-placeholder-box {
+            width: 100%;
+            height: 290px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .image-placeholder-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        @media (max-width:768px){
+            #mobileMenu {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                z-index: 999;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+            #mobileMenu.hidden {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-white/70 border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+
+            <a href="index.html" class="serif-font text-3xl font-bold tracking-widest text-stone-900">
+                ZYLO
+            </a>
+
+            <button id="menuBtn" class="md:hidden text-3xl cursor-pointer">
+                ☰
+            </button>
+
+            <nav id="mobileMenu" class="hidden flex-col items-start gap-4 text-sm font-medium text-stone-600 md:flex md:flex-row md:items-center md:gap-8">
+                <a href="index.html" class="hover:text-amber-800">Home</a>
+                <a href="produce.html" class="hover:text-amber-800">Our Products</a>
+                <a href="about.html" class="hover:text-amber-800">About </a>
+                <a href="checkout.html" class="hover:text-amber-800">Checkout</a>
+
+                <button onclick="toggleProfileModal()" class="bg-amber-800 text-white px-4 py-2 rounded-lg hover:bg-stone-900 transition-colors flex items-center gap-2 font-medium cursor-pointer">
+                    <span>👤</span>
+                    <span id="header-user-btn-name">Customer</span>
+                </button>
+            </nav>
+
+            <button onclick="toggleCartDrawer(true)" class="bg-stone-900 hover:bg-amber-800 text-white font-medium text-xs px-5 py-2.5 rounded-full transition-all flex items-center gap-2 uppercase cursor-pointer">
+                <span class="text-base">🛍️</span>
+                <span class="hidden sm:inline">Bag</span>
+                <span id="cart-count-badge" class="bg-white text-stone-900 px-2 rounded-full text-[10px]">0</span>
+            </button>
+
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-16 w-full flex-grow">
+        <div class="text-center mb-16 space-y-2 max-w-3xl mx-auto">
+            <h1 class="text-4xl md:text-5xl serif-title text-[#1C1B19]">Our Premium Soap Collection</h1>
+            <p class="text-[#7C7A74] text-sm">Handcrafted luxury items for your daily refreshment.</p>
+        </div>
+
+        <div id="products-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+    </main>
+
+    <div id="cart-drawer-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 transition-opacity duration-300 opacity-0 pointer-events-none" onclick="toggleCartDrawer(false)"></div>
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-[#FAF8F5] border-l border-[#EAE6DF] shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
+        <div class="p-6 border-b border-[#EAE6DF] flex items-center justify-between">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-[#1C1B19]">Your Shopping Bag</h3>
+            <button onclick="toggleCartDrawer(false)" class="text-stone-400 hover:text-[#1C1B19] text-lg cursor-pointer">✕</button>
+        </div>
+        
+        <div id="cart-drawer-items" class="p-6 overflow-y-auto flex-grow space-y-4">
+            </div>
+
+        <div class="p-6 border-t border-[#EAE6DF] bg-[#F5F2EC] space-y-4">
+            <div class="flex justify-between text-sm font-semibold text-[#1C1B19]">
+                <span>Subtotal:</span>
+                <span id="cart-drawer-total" class="brand-bronze text-base">Rs. 0</span>
+            </div>
+            <a href="checkout.html" class="block w-full brand-dark text-center font-semibold py-3.5 rounded-full text-xs uppercase tracking-wider hover:opacity-90 transition-opacity shadow-sm">
+                Proceed To Checkout
+            </a>
+        </div>
+    </div>
+
+    <div id="product-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#faf8f5] text-stone-900 rounded-3xl max-w-2xl w-full p-6 relative shadow-2xl overflow-hidden border border-stone-200">
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-800 text-2xl font-light z-10 transition-colors cursor-pointer">
+                ✕
+            </button>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div class="w-full h-64 md:h-72 bg-stone-200 rounded-2xl overflow-hidden flex items-center justify-center">
+                    <img id="modal-product-image" src="" alt="Product Image" class="w-full h-full object-cover rounded-2xl">
+                </div>
+
+                <div class="flex flex-col justify-between h-full space-y-4">
+                    <div>
+                        <h2 id="modal-product-title" class="text-2xl font-serif font-bold text-stone-900">Product Name</h2>
+                        <p id="modal-product-price" class="text-xl font-mono font-bold text-amber-700 mt-1">Rs. 0</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-stone-400 mb-1">Description & Benefits</h4>
+                        <p id="modal-product-description" class="text-sm text-stone-600 leading-relaxed">
+                            Product description details will appear here.
+                        </p>
+                    </div>
+
+                    <button id="modal-add-to-cart-btn" class="w-full bg-[#1c1917] hover:bg-black text-white font-semibold py-3.5 px-6 rounded-full transition-all duration-200 tracking-wide shadow-md cursor-pointer">
+                        ADD TO SHOPPING BAG
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 overflow-y-auto hidden">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-6 md:p-8 border border-stone-200 shadow-2xl space-y-6 relative max-h-[85vh] overflow-y-auto my-auto">
+            <button onclick="toggleProfileModal()" class="absolute top-6 right-6 text-stone-400 hover:text-stone-900 font-bold text-xl cursor-pointer">✕</button>
+            
+            <div class="flex items-center gap-4 border-b border-stone-100 pb-4">
+                <div class="w-14 h-14 bg-amber-100 text-amber-800 rounded-full flex items-center justify-center text-xl font-bold border border-amber-200">👤</div>
+                <div>
+                    <h3 id="profile-user-name" class="serif-font text-2xl font-bold text-stone-900">User Name</h3>
+                    <p id="profile-user-email" class="text-xs text-stone-500">user@gmail.com</p>
+                    <span id="profile-verify-badge" class="inline-block mt-1 text-[10px] bg-green-100 text-green-800 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Active Member</span>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-stone-400">YOUR RECENT ORDERS</h4>
+                <div id="profile-orders-list" class="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+                    <div class="text-sm text-stone-500 py-6 text-center">Loading orders from database...</div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-4 border-t border-stone-100">
+                <div class="flex items-center gap-3">
+                    <button id="profile-track-my-order-btn" onclick="profileTrackMostRecent()" class="bg-stone-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-amber-800 transition-colors cursor-pointer">Track My Order</button>
+                    <a href="track.html" class="text-xs font-bold text-stone-600 hover:text-amber-800 transition-colors">Track Order Status →</a>
+                </div>
+                <button onclick="logout()" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="border-t border-[#EAE6DF] bg-[#F5F2EC] py-12 text-xs text-[#7C7A74]">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-3">
+                <h4 class="text-[#1C1B19] font-bold tracking-widest text-sm serif-title">ZYLO</h4>
+                <p class="leading-relaxed text-[#5C5A54]">Premium organic soaps crafted elegantly with pure essential botanical streams for flawless skin glow.</p>
+            </div>
+            <div class="space-y-2">
+                <h4 class="text-[#1C1B19] font-bold uppercase tracking-wider text-[11px]">Shop</h4>
+                <p><a href="#" class="hover:text-black transition-colors">All Soaps</a></p>
+                <p><a href="#" class="hover:text-black transition-colors">Glow Bundles</a></p>
+            </div>
+            <div class="space-y-2">
+                <h4 class="text-[#1C1B19] font-bold uppercase tracking-wider text-[11px]">Company</h4>
+                <p><a href="#" class="hover:text-black transition-colors">Our Story</a></p>
+                <p><a href="#" class="hover:text-black transition-colors">Privacy Charter</a></p>
+            </div>
+            <div class="space-y-2">
+                <h4 class="text-[#1C1B19] font-bold uppercase tracking-wider text-[11px]">Connect</h4>
+                <p><a href="#" class="hover:text-black transition-colors">Instagram</a></p>
+                <p><a href="#" class="hover:text-black transition-colors">WhatsApp Support</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast" style="position:fixed; top:20px; right:-400px; background:#111; color:#fff; padding:15px 25px; border-radius:12px; font-weight:600; z-index:99999; transition:0.4s; box-shadow:0 10px 30px rgba(0,0,0,.2);">
+        Product Added
+    </div>
+
+    <script>
+        const soapsDatabase = [
+            { id: "soap_1", name: "Mint Cool", price: 150, image: "zylo pics/Screenshot 2026-07-18 045822.png", bg: "#E9F7FF", border: "#CFE8F7", desc: "Cooling mint and vitamin infusion for fresh, radiant skin." },
+            { id: "soap_2", name: "Rose Glow", price: 150, image: "zylo pics/Gemini_Generated_Image_suyo4wsuyo4wsuyo.png", bg: "#FFEFF3", border: "#F6DEE7", desc: "Soft rose petals with nourishing milk for a natural glow." },
+            { id: "soap_3", name: "Sandal Glow", price: 150, image: "zylo pics/Gemini_Generated_Image_ma8zoima8zoima8z.png", bg: "#FFF5E6", border: "#F2E1CC", desc: "Warm sandalwood and vitamin-rich formula for even tone and softness." },
+            { id: "soap_4", name: "Haldi Glow", price: 150, image: "zylo pics/Gemini_Generated_Image_os1ujlos1ujlos1u.png", bg: "#FFF7D9", border: "#F3E3B4", desc: "Turmeric and lemon vitamin formula to brighten dull, tired skin." },
+            { id: "soap_5", name: "Jasmine Milky", price: 150, image: "zylo pics/Gemini_Generated_Image_yblr1iyblr1iyblr.png", bg: "#F6F8FF", border: "#DFE6F4", desc: "Delicate jasmine and milk extract for smooth, luminous softness." }
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('zylo_cart')) || [];
+
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            if (!container) return;
+            container.innerHTML = soapsDatabase.map(soap => `
+                <div class="luxury-product-card flex flex-col justify-between h-[510px]">
+                    <div onclick="openProductModal('${soap.id}')" class="cursor-pointer space-y-4 group">
+                        <div class="image-placeholder-box border" style="background-color: ${soap.bg}; border-color: ${soap.border};">
+                            <img src="${soap.image}" alt="${soap.name}" class="absolute inset-0 w-full h-full object-cover" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 class="text-xl font-bold text-[#1C1B19] serif-title group-hover:text-[#B35B21] transition-colors leading-tight">${soap.name}</h3>
+                            <p class="text-[#B35B21] font-mono font-bold text-sm">Rs. ${soap.price}</p>
+                        </div>
+                        <p class="text-xs text-[#7C7A74] line-clamp-2 leading-relaxed">${soap.desc}</p>
+                    </div>
+                    <button onclick="addToCart('${soap.id}')" class="w-full mt-4 brand-dark font-semibold py-3 rounded-full text-xs uppercase tracking-wider hover:opacity-90 transition-all cursor-pointer">
+                        Add To Bag +
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function updateCartUI() {
+            localStorage.setItem('zylo_cart', JSON.stringify(cart));
+            const badge = document.getElementById('cart-count-badge');
+            let count = cart.reduce((sum, i) => sum + i.quantity, 0);
+            if (badge) badge.innerText = count;
+
+            const drawerItems = document.getElementById('cart-drawer-items');
+            if(!drawerItems) return;
+            
+            if(cart.length === 0) {
+                drawerItems.innerHTML = `<p class="text-[#7C7A74] text-xs text-center font-mono py-12">Your shopping bag is completely empty.</p>`;
+                const totalEl = document.getElementById('cart-drawer-total');
+                if(totalEl) totalEl.innerText = "Rs. 0";
+                return;
+            }
+
+            let html = '', total = 0;
+            cart.forEach((item, idx) => {
+                total += item.price * item.quantity;
+                html += `
+                    <div class="flex justify-between items-center bg-white border border-[#EAE6DF] p-4 rounded-xl text-xs">
+                        <div class="space-y-0.5">
+                            <span class="font-bold text-[#1C1B19] block serif-title uppercase">${item.name}</span>
+                            <span class="text-[#7C7A74] font-mono">Rs. ${item.price}</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center bg-[#FAF8F5] border border-[#EAE6DF] rounded-full overflow-hidden text-[11px]">
+                                <button onclick="changeQty(${idx}, -1)" class="px-2.5 py-1 text-[#7C7A74] hover:text-black hover:bg-[#F5F2EC] font-bold">-</button>
+                                <span class="px-1 text-[#1C1B19] font-bold">${item.quantity}</span>
+                                <button onclick="changeQty(${idx}, 1)" class="px-2.5 py-1 text-[#7C7A74] hover:text-black hover:bg-[#F5F2EC] font-bold">+</button>
+                            </div>
+                            <button onclick="removeItem(${idx})" class="text-stone-300 hover:text-red-500 font-bold ml-1 cursor-pointer">✕</button>
+                        </div>
+                    </div>
+                `;
+            });
+            drawerItems.innerHTML = html;
+            const totalEl = document.getElementById('cart-drawer-total');
+            if(totalEl) totalEl.innerText = `Rs. ${total}`;
+        }
+
+        window.addToCart = function(id) {
+            const prod = soapsDatabase.find(s => s.id === id);
+            if (!prod) return;
+            
+            const exist = cart.find(i => i.id === id);
+            if(exist) {
+                exist.quantity += 1;
+            } else {
+                cart.push({ id: prod.id, name: prod.name, price: prod.price, quantity: 1 });
+            }
+            updateCartUI();
+            showToast("✅ " + prod.name + " added to your bag!");
+        }
+
+        window.changeQty = function(idx, change) {
+            cart[idx].quantity += change;
+            if(cart[idx].quantity <= 0) cart.splice(idx, 1);
+            updateCartUI();
+        }
+
+        window.removeItem = function(idx) {
+            cart.splice(idx, 1);
+            updateCartUI();
+        }
+
+        window.toggleCartDrawer = function(show) {
+            const overlay = document.getElementById('cart-drawer-overlay');
+            const drawer = document.getElementById('cart-drawer');
+            if(!overlay || !drawer) return;
+            if(show) {
+                overlay.classList.remove('pointer-events-none', 'opacity-0');
+                drawer.classList.remove('translate-x-full');
+            } else {
+                overlay.classList.add('pointer-events-none', 'opacity-0');
+                drawer.classList.add('translate-x-full');
+            }
+        }
+
+        window.openProductModal = function(productId) {
+            const product = soapsDatabase.find(s => s.id === productId);
+            if (!product) return;
+
+            const titleEl = document.getElementById('modal-product-title');
+            const priceEl = document.getElementById('modal-product-price');
+            const descEl = document.getElementById('modal-product-description');
+            
+            if(titleEl) titleEl.innerText = product.name;
+            if(priceEl) priceEl.innerText = `Rs. ${product.price}`;
+            if(descEl) descEl.innerText = product.desc || 'No description available.';
+            
+            const imgElement = document.getElementById('modal-product-image');
+            if (imgElement) {
+                imgElement.src = product.image;
+                imgElement.alt = product.name;
+            }
+
+            const addBtn = document.getElementById('modal-add-to-cart-btn');
+            if (addBtn) {
+                addBtn.onclick = function() {
+                    addToCart(product.id);
+                    closeProductModal();
+                };
+            }
+
+            const modal = document.getElementById('product-modal');
+            if(modal) modal.classList.remove('hidden');
+        }
+
+        window.closeProductModal = function() {
+            const modal = document.getElementById('product-modal');
+            if(modal) modal.classList.add('hidden');
+        }
+
+        function showToast(message){
+            const toast = document.getElementById("toast");
+            if(!toast) return;
+            toast.innerText = message;
+            toast.style.right = "20px";
+            setTimeout(() => {
+                toast.style.right = "-400px";
+            }, 2500);
+        }
+
+        const menuBtn = document.getElementById("menuBtn");
+        const mobileMenu = document.getElementById("mobileMenu");
+
+        if(menuBtn && mobileMenu) {
+            menuBtn.addEventListener("click", () => {
+                mobileMenu.classList.toggle("hidden");
+            });
+        }
+
+        // Initial Calls
+        renderProducts();
+        updateCartUI();
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyBPbb16mw5koowrJaPA4D6MG-Yyrg9_liI",
+            authDomain: "zylo-store.firebaseapp.com",
+            databaseURL: "https://zylo-store-default-rtdb.firebaseio.com",
+            projectId: "zylo-store",
+            storageBucket: "zylo-store.firebasestorage.app",
+            messagingSenderId: "89360576006",
+            appId: "1:89360576006:web:3f9168edc387e93e101d87"
+        };
+        
+        const db = getDatabase(initializeApp(firebaseConfig));
+
+        // Sync header user name on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            const headerNameEl = document.getElementById('header-user-btn-name');
+            if (current && headerNameEl && current.name) {
+                headerNameEl.textContent = current.name;
+            }
+        });
+
+        window.toggleProfileModal = function() {
+            const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (!current) { alert('Please log in to view your profile.'); window.location.href='login.html'; return; }
+            
+            document.getElementById('profile-user-name').textContent = current.name || 'Customer';
+            document.getElementById('profile-user-email').textContent = current.email || '';
+            
+            const modal = document.getElementById('profile-modal');
+            if(modal) {
+                modal.classList.toggle('hidden');
+                if(!modal.classList.contains('hidden')) {
+                    loadProfileOrders();
+                }
+            }
+        }
+
+        window.logout = function() {
+            document.getElementById('profile-modal').classList.add('hidden');
+            localStorage.removeItem('currentUser');
+            const headerNameEl = document.getElementById('header-user-btn-name');
+            if (headerNameEl) headerNameEl.textContent = 'Customer';
+            window.location.href = 'login.html';
+        }
+window.loadProfileOrders = async function() {
+            const container = document.querySelector('#profile-orders-list');
+            if (!container) return;
+
+            const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (!current || !current.email) {
+                container.innerHTML = '<div class="text-sm text-stone-500 py-6 text-center">Please log in to view your orders.</div>';
+                return;
+            }
+
+            container.innerHTML = '<div class="text-sm text-stone-500 py-6 text-center">Loading your orders...</div>';
+
+            try {
+                const snapshot = await get(ref(db, 'soap_orders'));
+                let userOrders = [];
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        const val = child.val();
+                        // Filter orders matching the logged-in user's email (case-insensitive check)
+                        if (val && val.email && val.email.toLowerCase() === current.email.toLowerCase()) {
+                            userOrders.push(val);
+                        }
+                    });
+                }
+
+                if (userOrders.length === 0) {
+                    container.innerHTML = '<div class="text-sm text-stone-500 py-6 text-center">No recent orders found for your account.</div>';
+                    return;
+                }
+
+                container.innerHTML = userOrders.slice().reverse().map(order => {
+                    const currentStatus = order.status || 'Pending';
+                    
+                    let badgeClass = 'bg-amber-100 text-amber-800';
+                    if (currentStatus === 'Ready to Deliver') badgeClass = 'bg-purple-100 text-purple-800';
+                    else if (currentStatus === 'Cancelled') badgeClass = 'bg-red-100 text-red-800';
+                    else if (currentStatus === 'Processing') badgeClass = 'bg-sky-100 text-sky-800';
+                    else if (currentStatus === 'Completed' || currentStatus === 'Delivered') badgeClass = 'bg-emerald-100 text-emerald-800';
+
+                    return `
+                        <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-semibold text-stone-800">Order ID: <span class="font-mono text-stone-900">${order.orderId || order.id || '-'}</span></span>
+                                <span class="${badgeClass} px-2.5 py-0.5 rounded-full font-bold text-[10px]">${currentStatus}</span>
+                            </div>
+                            <div class="text-xs text-stone-600 space-y-1">
+                                ${order.itemsSummary ? `<p><strong>Items:</strong> ${order.itemsSummary}</p>` : ''}
+                                <p><strong>Total Amount:</strong> Rs. ${order.total || order.subtotal || 0}</p>
+                                <p class="font-semibold text-stone-800 pt-0.5">Tracking ID: <span class="font-mono text-amber-800">${order.trackingId || '-'}</span></p>
+                                <p class="text-stone-500">${order.timestamp || ''}</p>
+                                <p class="mt-2">
+                                    <button onclick="window.location.href='track.html?id=${encodeURIComponent(order.trackingId || '')}'" class="bg-amber-800 text-white px-3 py-2 rounded-lg hover:bg-amber-900 text-xs font-bold inline-block cursor-pointer">Track Order</button>
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<div class="text-sm text-red-500 py-6 text-center">Failed to load orders.</div>';
+            }
+        }
+        
+        
+        
+        </script>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed | Zylo Store</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Plus+Jakarta+Sans:wght@300;450;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; } 
+        .serif-font { font-family: 'Playfair Display', serif; }
+        @media (max-width: 768px) {
+    .container { width: 95%; }
+    .nav-menu { display: none; } /* Mobile menu logic */
+}
+@media (max-width:768px){
+
+#mobileMenu{
+    position:absolute;
+    top:80px;
+    left:0;
+    width:100%;
+    background:white;
+    padding:20px;
+    z-index:999;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+}
+@media (max-width:768px){
+
+#mobileMenu{
+    display:flex;
+    flex-direction:column;
+    position:absolute;
+    top:80px;
+    left:0;
+    width:100%;
+    background:white;
+    padding:20px;
+    z-index:999;
+}
+
+#mobileMenu.hidden{
+    display:none;
+}
+
+}
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-850 antialiased min-h-screen flex flex-col justify-between">
+
+   <header class="sticky top-0 z-50 bg-white border-b">
+  <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+
+    <a href="index.html" class="text-3xl font-bold">
+      ZYLO
+    </a>
+
+    <button id="menuBtn" class="md:hidden text-3xl">
+      ☰
+    </button>
+
+    <nav id="mobileMenu"
+class="hidden flex-col items-start gap-4 text-sm font-medium text-stone-600 md:flex md:flex-row md:items-center md:gap-8">
+
+      <a href="index.html">Home</a>
+      <a href="produce.html">Products</a>
+      <a href="about.html">About</a>
+      <a href="checkout.html">Checkout</a>
+      <a href="track.html" class="bg-amber-800 text-white px-4 py-2 rounded-lg hover:bg-stone-900 transition-colors">Track Order</a>
+
+            <!-- Profile Button -->
+            <button onclick="toggleProfileModal()" class="bg-amber-800 text-white px-4 py-2 rounded-lg hover:bg-stone-900 transition-colors flex items-center gap-2 font-medium">
+                <span>👤</span>
+                <span id="header-user-btn-name">Customer</span>
+            </button>
+
+
+    </nav>
+
+  </div>
+</header>
+
+    <main class="max-w-xl mx-auto px-6 py-16 text-center flex-grow flex flex-col justify-center items-center">
+        
+        <div class="w-16 h-16 bg-emerald-50 border border-emerald-200 rounded-full flex items-center justify-center mb-6 shadow-xs animate-bounce">
+            <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+
+        <h1 class="serif-font text-3xl font-bold text-stone-900 mb-2">
+            Thank you, <span id="cust-name" class="text-amber-800">Customer</span>!
+        </h1>
+        <p class="text-stone-500 text-sm max-w-sm leading-relaxed mb-8">
+            Your order has been received and successfully registered in our system. We will contact you shortly.
+        </p>
+
+        <div class="w-full bg-white border border-stone-200 rounded-3xl p-6 shadow-sm space-y-4 mb-8">
+            <span class="text-xs font-bold uppercase tracking-widest text-stone-400 block">Your Tracking / Order ID</span>
+            <div id="tracking-id-display" class="text-lg md:text-xl font-mono font-bold bg-stone-50 border border-stone-200 py-3 px-4 rounded-xl text-stone-900 select-all cursor-pointer hover:bg-stone-100 transition-colors break-all" title="Click to copy">
+                Loading...
+            </div>
+            <p class="text-[11px] text-stone-400 leading-normal">
+                💡 Please save this ID for reference. You can use it when contacting support on WhatsApp or checking your parcel status. (Click to copy)
+            </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 w-full">
+            <a href="index.html" class="flex-1 bg-stone-900 hover:bg-amber-800 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider text-center transition-colors">
+                Continue Shopping
+            </a>
+            <a href="https://wa.me/923001234567" target="_blank" class="flex-1 bg-white border border-stone-300 text-stone-700 font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider text-center hover:bg-stone-50 transition-colors">
+                Contact Support
+            </a>
+            
+        </div>
+    
+    </main>
+
+    <footer class="border-t border-stone-200 bg-stone-100 py-6 text-center text-xs text-stone-400">
+        <p>&copy; 2026 ZYLO Store. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const trackingID = urlParams.get('tracking') || urlParams.get('id');
+        const numericOrderId = urlParams.get('orderId');
+        const nameData = urlParams.get('name');
+
+        if(trackingID || numericOrderId) {
+            const parts = [];
+            if (trackingID) parts.push(`Tracking: ${trackingID}`);
+            if (numericOrderId) parts.push(`Order ID: ${numericOrderId}`);
+            document.getElementById('tracking-id-display').innerText = parts.join(' — ');
+        } else {
+            document.getElementById('tracking-id-display').innerText = "ID Not Found";
+        }
+
+        if(nameData) {
+            document.getElementById('cust-name').innerText = decodeURIComponent(nameData);
+        }
+
+        // Click to Copy Logic
+        document.getElementById('tracking-id-display').addEventListener('click', function() {
+            if(this.innerText !== 'ID Not Found') {
+                navigator.clipboard.writeText(this.innerText);
+                alert("Tracking ID copy ho gayi!");
+            }
+        });
+
+
+const menuBtn = document.getElementById("menuBtn");
+const mobileMenu = document.getElementById("mobileMenu");
+
+menuBtn.addEventListener("click", () => {
+    mobileMenu.classList.toggle("hidden");
+});
+
+    </script>
+<!-- NEW / FIXED CODE -->
+<!-- NEW / FIXED CODE -->
+
+<!-- Main Overlay Box (overflow-y-auto added) -->
+<div id="profile-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 overflow-y-auto hidden">
+    
+    <!-- White Content Box (max-h-[85vh] aur overflow-y-auto added) -->
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 md:p-8 border border-stone-200 shadow-2xl space-y-6 relative max-h-[85vh] overflow-y-auto my-auto">
+        
+        <button onclick="toggleProfileModal()" class="absolute top-6 right-6 text-stone-400 hover:text-stone-900 font-bold text-xl cursor-pointer">✕</button>
+        
+        <div class="flex items-center gap-4 border-b border-stone-100 pb-4">
+            <div class="w-14 h-14 bg-amber-100 text-amber-800 rounded-full flex items-center justify-center text-xl font-bold border border-amber-200">👤</div>
+            <div>
+                <h3 id="profile-user-name" class="serif-font text-2xl font-bold text-stone-900">User Name</h3>
+                <p id="profile-user-email" class="text-xs text-stone-500">user@gmail.com</p>
+                <span id="profile-verify-badge" class="inline-block mt-1 text-[10px] bg-green-100 text-green-800 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Active Member</span>
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-400">Your Recent Orders</h4>
+            <!-- Orders List Box (max-h-[350px] aur overflow-y-auto added) -->
+            <div id="profile-orders-list" class="space-y-3 max-h-[350px] overflow-y-auto pr-1"></div>
+        </div>
+
+        <div class="flex justify-between items-center pt-4 border-t border-stone-100">
+            <div class="flex items-center gap-3">
+                <button id="profile-track-my-order-btn" onclick="profileTrackMostRecent()" class="text-xs font-bold text-white bg-amber-800 px-3 py-2 rounded-lg hover:bg-amber-900 cursor-pointer">Track My Order</button>
+                <a href="track.html" class="text-xs font-bold text-amber-800 hover:underline flex items-center gap-1"><span>Track Order Status</span> →</a>
+            </div>
+            <button onclick="logout()" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer">Logout</button>
+        </div>
+
+    </div>
+</div>
+<script>
+    (function(){ const current = JSON.parse(localStorage.getItem('currentUser') || 'null'); const headerNameEl = document.getElementById('header-user-btn-name'); if (current && headerNameEl) headerNameEl.textContent = current.name; })();
+    function toggleProfileModal(){ const current = JSON.parse(localStorage.getItem('currentUser') || 'null'); if(!current){ alert('Please log in to view your profile.'); window.location.href='login.html'; return;} document.getElementById('profile-user-name').textContent = current.name; document.getElementById('profile-user-email').textContent = current.email; loadProfileOrders(); document.getElementById('profile-modal').classList.toggle('hidden'); }
+    function logout(){ localStorage.removeItem('currentUser'); window.location.href='login.html'; }
+    function getUserOrders(email){ const key = `zylo_orders_${encodeURIComponent(email)}`; try{return JSON.parse(localStorage.getItem(key) || '[]')}catch(e){return []} }
+    function renderOrdersList(orders){ const container = document.querySelector('#profile-orders-list'); if(!container) return; container.innerHTML=''; if(!orders||orders.length===0){ container.innerHTML='<div class="text-sm text-stone-500 py-6 text-center">No recent orders found.</div>'; return;} orders.slice().reverse().forEach(order=>{ const el=document.createElement('div'); el.className='bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-2'; el.innerHTML=`<div class="flex justify-between items-center text-xs"><span class="font-semibold text-stone-800">Order ID: <span class="font-mono">${order.orderId||order.id||'-'}</span></span><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold text-[10px]">${order.status||'Unknown'}</span></div><div class="text-xs text-stone-600 space-y-1"><p><strong>Items:</strong> ${order.items?.length||0}</p><p><strong>Total Amount:</strong> Rs. ${order.total||order.subtotal||0}</p><p class="text-amber-800 font-mono font-semibold pt-1"><strong>Tracking ID:</strong> <span class="bg-white px-2 py-1 border border-stone-200 rounded-md">${order.trackingId||'-'}</span></p><p class="text-xs text-stone-500">${order.timestamp||''}</p><p class="mt-2"><a href="track.html?id=${encodeURIComponent(order.trackingId || '')}" class="bg-amber-800 text-white px-3 py-2 rounded-lg hover:bg-amber-900 text-xs font-bold inline-block">Track Order</a></p></div>`; container.appendChild(el); }) }
+    function loadProfileOrders(){ const current = JSON.parse(localStorage.getItem('currentUser') || 'null'); if(!current) return renderOrdersList([]); const orders = getUserOrders(current.email); renderOrdersList(orders); }
+        function profileTrackMostRecent(){ const current = JSON.parse(localStorage.getItem('currentUser') || 'null'); if(!current){ alert('Please log in first.'); window.location.href='login.html'; return;} const orders = getUserOrders(current.email) || []; if(!orders.length){ alert('No orders found for your account.'); return;} const last = orders[orders.length-1]; const tid = last && last.trackingId ? last.trackingId : null; if(!tid){ alert('The selected order does not have a tracking ID.'); return;} window.location.href = `track.html?id=${encodeURIComponent(tid)}`; }
+</script>
+</body>
+</html>
